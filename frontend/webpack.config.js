@@ -1,69 +1,64 @@
 const path = require('path');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
 
-module.exports = (env, argv) => {
-  const isProduction = argv.mode === 'production';
-  
-  return {
-    entry: './src/main.jsx',
-    output: {
-      path: path.resolve(__dirname, 'dist'),
-      filename: isProduction ? '[name].[contenthash].js' : '[name].js',
-      clean: true,
-      publicPath: '/'
-    },
-    module: {
-      rules: [
-        {
-          test: /\.(js|jsx|ts|tsx)$/,
-          exclude: /node_modules/,
-          use: {
-            loader: 'babel-loader',
-            options: {
-              presets: [
-                '@babel/preset-env',
-                '@babel/preset-react',
-                '@babel/preset-typescript'
-              ]
-            }
-          }
-        },
-        {
-          test: /\.css$/,
-          use: ['style-loader', 'css-loader']
-        },
-        {
-          test: /\.s[ac]ss$/,
-          use: ['style-loader', 'css-loader', 'sass-loader']
-        },
-        {
-          test: /\.(png|svg|jpg|jpeg|gif)$/i,
-          type: 'asset/resource'
-        }
-      ]
-    },
-    resolve: {
-      extensions: ['.tsx', '.ts', '.jsx', '.js']
-    },
-    plugins: [
-      new HtmlWebpackPlugin({
-        template: './index.html',
-        filename: 'index.html'
-      })
-    ],
-    devServer: {
-      static: {
-        directory: path.join(__dirname, 'public')
-      },
-      port: 5173,
-      host: '0.0.0.0',
-      hot: true,
-      historyApiFallback: true
-    },
-    optimization: {
-      splitChunks: {
-        chunks: 'all'
-      }
+module.exports = {
+  mode: 'production',
+  entry: './src/main.jsx',
+  output: {
+    path: path.resolve(__dirname, 'dist'),
+    filename: '[name].[contenthash].js',
+    clean: true,
+    publicPath: '/'
+  },
+  resolve: {
+    extensions: ['.js', '.jsx', '.ts', '.tsx'],
+    alias: {
+      '@': path.resolve(__dirname, 'src')
     }
-  };
+  },
+  module: {
+    rules: [
+      {
+        test: /\.(js|jsx)$/,
+        exclude: /node_modules/,
+        use: {
+          loader: 'babel-loader',
+          options: {
+            presets: [
+              ['@babel/preset-env', { targets: 'defaults' }],
+              ['@babel/preset-react', { runtime: 'automatic' }]
+            ]
+          }
+        }
+      },
+      {
+        test: /\.scss$/,
+        use: [
+          'style-loader',
+          {
+            loader: 'css-loader',
+            options: {
+              modules: {
+                localIdentName: '[name]__[local]___[hash:base64:5]'
+              }
+            }
+          },
+          'sass-loader'
+        ]
+      },
+      {
+        test: /\.css$/,
+        use: ['style-loader', 'css-loader']
+      },
+      {
+        test: /\.(png|jpg|jpeg|gif|svg)$/,
+        type: 'asset/resource'
+      }
+    ]
+  },
+  plugins: [],
+  optimization: {
+    splitChunks: {
+      chunks: 'all'
+    }
+  }
 };
