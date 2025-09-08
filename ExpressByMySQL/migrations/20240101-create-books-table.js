@@ -57,7 +57,7 @@ module.exports = {
         defaultValue: false
       },
       cover_image: {
-        type: DataTypes.TEXT('long'),
+        type: DataTypes.TEXT,
         allowNull: true
       },
       cover_filename: {
@@ -84,7 +84,7 @@ module.exports = {
       updated_at: {
         type: DataTypes.DATE,
         allowNull: false,
-        defaultValue: Sequelize.literal('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP')
+        defaultValue: Sequelize.literal('CURRENT_TIMESTAMP')
       }
     });
   },
