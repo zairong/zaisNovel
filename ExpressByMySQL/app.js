@@ -66,6 +66,20 @@ app.use(express.static(path.join(__dirname, 'public')))
 // 封面圖片靜態檔案服務
 app.use('/uploads/covers', express.static(path.join(__dirname, 'uploads', 'covers')))
 
+// 健康檢查端點（用於 Render 等平台的監控）
+app.get('/', (req, res) => {
+  res.json({
+    success: true,
+    message: 'zaisNovel API 服務正常運行',
+    timestamp: new Date().toISOString(),
+    version: '1.0.0'
+  })
+})
+
+app.head('/', (req, res) => {
+  res.status(200).end()
+})
+
 // API 路由設定
 app.use('/api', apiRoutes)
 
