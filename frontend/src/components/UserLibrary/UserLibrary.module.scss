@@ -1,0 +1,845 @@
+.libraryContainer {
+  padding: 20px;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.libraryHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+  flex-wrap: wrap;
+  gap: 20px;
+
+  h2 {
+    margin: 0;
+    color: #333;
+    font-size: 24px;
+    font-weight: 600;
+  }
+}
+
+.statsContainer {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.statItem {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 15px;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  min-width: 80px;
+}
+
+.statNumber {
+  font-size: 24px;
+  font-weight: 600;
+  color: #667eea;
+}
+
+.statLabel {
+  font-size: 12px;
+  color: #fff;
+  margin-top: 5px;
+}
+
+.libraryControls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.filterControls {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.filterButton {
+  padding: 8px 16px;
+  border: 2px solid #fff;
+  background: white;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.3s ease;
+
+  &:hover {
+    border-color: #667eea;
+  }
+
+  &.active {
+    background: #667eea;
+    color: white;
+    border-color: #667eea;
+  }
+}
+
+.searchControls {
+  display: flex;
+  gap: 15px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.searchForm {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.searchInput {
+  padding: 8px 12px;
+  border: 2px solid #fff;
+  border-radius: 6px;
+  font-size: 14px;
+  min-width: 200px;
+
+  &:focus {
+    outline: none;
+    border-color: #667eea;
+  }
+}
+
+.searchButton {
+  padding: 8px 16px;
+  background: #667eea;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background 0.3s ease;
+
+  &:hover {
+    background: #5a67d8;
+  }
+}
+
+.batchRemoveButton {
+  padding: 8px 16px;
+  background: #e53e3e;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background 0.3s ease;
+
+  &:hover {
+    background: #c53030;
+  }
+}
+
+.booksGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(500px, 1fr));
+  gap: 20px;
+  margin-bottom: 30px;
+}
+
+.bookCard {
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  }
+}
+
+.bookHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.bookCheckbox {
+  margin-right: 10px;
+}
+
+.favoriteButton {
+  background: none;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+  transition: transform 0.3s ease;
+
+  &:hover {
+    transform: scale(1.2);
+  }
+
+  &.favorited {
+    animation: heartBeat 0.3s ease;
+  }
+}
+
+@keyframes heartBeat {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.3); }
+  100% { transform: scale(1); }
+}
+
+.bookInfo {
+  margin-bottom: 20px;
+}
+
+.bookContentContainer {
+  display: flex;
+  gap: 15px;
+  align-items: flex-start;
+}
+
+.bookTitle {
+  margin: 0 0 8px 0;
+  font-size: 18px;
+  font-weight: 600;
+  color: #333;
+}
+
+.bookInfoRight {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.bookAuthor {
+  margin: 0;
+  color: #666;
+  font-size: 14px;
+}
+
+.bookDescription {
+  margin: 0;
+  color: #666;
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+.bookProgress {
+  margin-bottom: 15px;
+
+  label {
+    display: block;
+    margin-bottom: 5px;
+    font-size: 12px;
+    color: #fff;
+  }
+
+  span {
+    margin-left: 10px;
+    font-size: 12px;
+    color: #fff;
+  }
+}
+
+.progressSlider {
+  width: 100%;
+  height: 6px;
+  border-radius: 3px;
+  background: #fff;
+  outline: none;
+  cursor: pointer;
+
+  &::-webkit-slider-thumb {
+    appearance: none;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: #667eea;
+    cursor: pointer;
+  }
+
+  &::-moz-range-thumb {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: #667eea;
+    cursor: pointer;
+    border: none;
+  }
+}
+
+.bookRating {
+  margin-bottom: 15px;
+
+  label {
+    display: block;
+    margin-bottom: 5px;
+    font-size: 12px;
+    color: #fff;
+  }
+}
+
+.ratingStars {
+  display: flex;
+  gap: 2px;
+}
+
+.starButton {
+  background: none;
+  border: none;
+  font-size: 16px;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+
+  &:hover {
+    transform: scale(1.2);
+  }
+
+  &.starred {
+    color: #fbbf24;
+  }
+}
+
+.bookActions {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+/* 閱讀按鈕樣式 */
+.readingButton {
+  padding: 8px 16px;
+  display: flex;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+  
+  &:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  }
+}
+
+.startReading {
+  background: #667eea;
+  color: white;
+  
+  &:hover {
+    background: #5a67d8;
+  }
+}
+
+.continueReading {
+  background: #38a169;
+  color: white;
+  
+  &:hover {
+    background: #2f855a;
+  }
+}
+
+/* 書籍類型標籤 */
+.bookType {
+  margin: 5px 0 0 0;
+  color: #667eea;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.removeButton {
+  padding: 8px 16px;
+  background: #e53e3e;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 12px;
+  transition: background 0.3s ease;
+
+  &:hover {
+    background: #c53030;
+  }
+}
+
+.emptyState {
+  text-align: center;
+  padding: 60px 20px;
+  color: #fff;
+
+  p {
+    margin: 10px 0;
+    font-size: 16px;
+  }
+}
+
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+  margin-top: 30px;
+}
+
+.pageButton {
+  padding: 8px 16px;
+  background: #667eea;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background 0.3s ease;
+
+  &:hover:not(:disabled) {
+    background: #5a67d8;
+  }
+
+  &:disabled {
+    background: #cbd5e0;
+    cursor: not-allowed;
+  }
+}
+
+.pageInfo {
+  color: #fff;
+  font-size: 14px;
+}
+
+.errorMessage {
+  background: #fee;
+  color: #c53030;
+  padding: 12px 16px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  border: 1px solid #feb2b2;
+  font-size: 14px;
+}
+
+.loadingContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 400px;
+}
+
+.loadingSpinner {
+  color: #667eea;
+  font-size: 16px;
+}
+
+// 新增的電子書相關樣式
+.ebookFileInfo {
+  margin-top: 10px;
+  padding: 8px;
+  background: #f7fafc;
+  border-radius: 4px;
+  border-left: 3px solid #667eea;
+}
+
+.ebookFilename {
+  margin: 0 0 4px 0;
+  font-size: 11px;
+  color: #4a5568;
+  word-break: break-all;
+}
+
+.ebookSize {
+  margin: 0;
+  font-size: 11px;
+  color: #718096;
+}
+
+.bookFooter {
+  margin-top: 15px;
+  padding-top: 15px;
+  border-top: 1px solid #e2e8f0;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+}
+
+.bookDate {
+  display: block;
+  font-size: 12px;
+  color: #718096;
+  margin-bottom: 10px;
+  text-align: center;
+}
+
+.ebookActions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+}
+
+.btnDownloadEbook {
+  padding: 6px 12px;
+  background: #38a169;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+
+  &:hover {
+    background: #2f855a;
+    transform: translateY(-1px);
+  }
+}
+
+.btnComment {
+  padding: 6px 12px;
+  background: #3182ce;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+
+  &:hover {
+    background: #2c5aa0;
+    transform: translateY(-1px);
+  }
+}
+
+.btnEditEbook {
+  padding: 6px 12px;
+  background: #d69e2e;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+
+  &:hover {
+    background: #b7791f;
+    transform: translateY(-1px);
+  }
+}
+.bookCover{
+  display: flex;
+  width: 120px;
+  height: 160px;
+  flex-shrink: 0;
+}
+.coverImage{
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+
+  &:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  }
+}
+
+.coverPlaceholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f7fafc;
+  border: 2px dashed #cbd5e0;
+  border-radius: 4px;
+  font-size: 32px;
+  color: #a0aec0;
+}
+
+
+// 響應式設計
+@media (max-width: 768px) {
+  .libraryHeader {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .statsContainer {
+    justify-content: center;
+  }
+
+  .libraryControls {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .filterControls {
+    justify-content: center;
+  }
+
+  .searchControls {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .searchForm {
+    flex-direction: column;
+  }
+
+  .searchInput {
+    min-width: auto;
+  }
+
+  .booksGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .bookContentContainer {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .bookCover {
+    width: 100px;
+    height: 140px;
+  }
+
+  .bookInfoRight {
+    width: 100%;
+    text-align: center;
+  }
+}
+
+// 深色主題支援
+@media (prefers-color-scheme: dark) {
+  .libraryContainer {
+    color: #e2e8f0;
+  }
+
+  .libraryHeader h2 {
+    color: #e2e8f0;
+  }
+
+  .statItem {
+    background: #2d3748;
+  }
+
+  .bookCard {
+    background: #2d3748;
+  }
+
+  .bookTitle {
+    color: #e2e8f0;
+  }
+
+  .bookAuthor {
+    color: #a0aec0;
+  }
+
+  .bookDescription {
+    color: #a0aec0;
+  }
+
+  .coverPlaceholder {
+    background: #4a5568;
+    border-color: #718096;
+    color: #a0aec0;
+  }
+
+  .filterButton {
+    background: #2d3748;
+    border-color: #4a5568;
+    color: #e2e8f0;
+
+    &:hover {
+      border-color: #667eea;
+    }
+
+    &.active {
+      background: #667eea;
+      border-color: #667eea;
+    }
+  }
+
+  .searchInput {
+    background: #4a5568;
+    border-color: #4a5568;
+    color: #e2e8f0;
+
+    &:focus {
+      border-color: #667eea;
+    }
+  }
+
+  .pageInfo {
+    color: #a0aec0;
+  }
+
+  .emptyState {
+    color: #a0aec0;
+  }
+
+  .ebookFileInfo {
+    background: #4a5568;
+    border-left-color: #667eea;
+  }
+
+  .ebookFilename {
+    color: #e2e8f0;
+  }
+
+  .ebookSize {
+    color: #a0aec0;
+  }
+
+  .bookFooter {
+    border-top-color: #4a5568;
+  }
+
+  .bookDate {
+    color: #a0aec0;
+  }
+}
+
+// 回到頂部按鈕樣式
+.scrollToTopButton {
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  width: 50px;
+  height: 50px;
+  background: #667eea;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 20px;
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+  transition: all 0.3s ease;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  &:hover {
+    background: #5a67d8;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(102, 126, 234, 0.6);
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+}
+
+// 深色主題下的回到頂部按鈕
+@media (prefers-color-scheme: dark) {
+  .scrollToTopButton {
+    background: #667eea;
+    
+    &:hover {
+      background: #5a67d8;
+    }
+  }
+}
+
+// 圖片預覽Modal樣式
+.imagePreviewModal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.9);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+  cursor: pointer;
+}
+
+.imagePreviewContent {
+  position: relative;
+  max-width: 90%;
+  max-height: 90%;
+  background: white;
+  border-radius: 8px;
+  padding: 20px;
+  cursor: default;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.closeButton {
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  color: #666;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: all 0.2s ease;
+
+  &:hover {
+    background: #f0f0f0;
+    color: #333;
+  }
+}
+
+.previewTitle {
+  margin: 0 0 20px 0;
+  font-size: 18px;
+  font-weight: 600;
+  color: #333;
+  text-align: center;
+  max-width: 100%;
+  word-wrap: break-word;
+}
+
+.previewImage {
+  max-width: 100%;
+  max-height: 70vh;
+  object-fit: contain;
+  border-radius: 4px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+// 深色主題下的圖片預覽Modal
+@media (prefers-color-scheme: dark) {
+  .imagePreviewContent {
+    background: #2d3748;
+  }
+
+  .closeButton {
+    color: #a0aec0;
+
+    &:hover {
+      background: #4a5568;
+      color: #e2e8f0;
+    }
+  }
+
+  .previewTitle {
+    color: #e2e8f0;
+  }
+}

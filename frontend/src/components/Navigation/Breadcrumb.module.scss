@@ -1,0 +1,197 @@
+.breadcrumb {
+  margin-bottom: 2rem;
+  padding: 1rem 1.5rem;
+  background: rgba(26, 26, 46, 0.8);
+  backdrop-filter: blur(15px);
+  border-radius: 12px;
+  border: 1px solid rgba(255, 215, 0, 0.2);
+  box-shadow: 
+    0 4px 20px rgba(0, 0, 0, 0.2),
+    0 0 10px rgba(255, 215, 0, 0.1);
+  transition: all 0.3s ease;
+  
+  &:hover {
+    border-color: rgba(255, 215, 0, 0.3);
+    box-shadow: 
+      0 4px 20px rgba(0, 0, 0, 0.2),
+      0 0 15px rgba(255, 215, 0, 0.15);
+  }
+}
+
+.breadcrumbList {
+  display: flex;
+  align-items: center;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.breadcrumbItem {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.separator {
+  display: flex;
+  align-items: center;
+  color: rgba(255, 215, 0, 0.5);
+  margin: 0 0.5rem;
+}
+
+.separatorIcon {
+  width: 16px;
+  height: 16px;
+  transition: all 0.3s ease;
+  
+  .breadcrumb:hover & {
+    color: rgba(255, 215, 0, 0.7);
+    transform: scale(1.1);
+  }
+}
+
+.breadcrumbLink {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #e6e6fa;
+  text-decoration: none;
+  padding: 0.5rem 0.8rem;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  position: relative;
+  font-weight: 500;
+  
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, rgba(255, 215, 0, 0.1), transparent);
+    border-radius: 8px;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+  
+  &:hover {
+    color: #ffd700;
+    background: rgba(255, 215, 0, 0.1);
+    transform: translateY(-1px);
+    
+    &::before {
+      opacity: 1;
+    }
+    
+    .breadcrumbIcon {
+      transform: scale(1.1);
+      text-shadow: 0 0 8px rgba(255, 215, 0, 0.5);
+    }
+    
+    .breadcrumbText {
+      text-shadow: 0 0 5px rgba(255, 215, 0, 0.3);
+    }
+  }
+  
+  &.current {
+    color: #ffd700;
+    background: rgba(255, 215, 0, 0.15);
+    border: 1px solid rgba(255, 215, 0, 0.3);
+    cursor: default;
+    
+    .breadcrumbIcon {
+      text-shadow: 0 0 8px rgba(255, 215, 0, 0.5);
+    }
+    
+    .breadcrumbText {
+      text-shadow: 0 0 5px rgba(255, 215, 0, 0.3);
+      font-weight: 600;
+    }
+  }
+}
+
+.breadcrumbIcon {
+  font-size: 1rem;
+  transition: all 0.3s ease;
+}
+
+.breadcrumbText {
+  font-size: 0.9rem;
+  transition: all 0.3s ease;
+}
+
+/* 響應式設計 */
+@media (max-width: 768px) {
+  .breadcrumb {
+    padding: 0.8rem 1rem;
+    margin-bottom: 1.5rem;
+  }
+  
+  .breadcrumbList {
+    gap: 0.3rem;
+  }
+  
+  .breadcrumbItem {
+    gap: 0.3rem;
+  }
+  
+  .separator {
+    margin: 0 0.3rem;
+  }
+  
+  .separatorIcon {
+    width: 14px;
+    height: 14px;
+  }
+  
+  .breadcrumbLink {
+    padding: 0.4rem 0.6rem;
+    
+    .breadcrumbText {
+      font-size: 0.8rem;
+    }
+  }
+  
+  .breadcrumbIcon {
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .breadcrumb {
+    padding: 0.6rem 0.8rem;
+    margin-bottom: 1rem;
+  }
+  
+  .breadcrumbList {
+    gap: 0.2rem;
+  }
+  
+  .breadcrumbItem {
+    gap: 0.2rem;
+  }
+  
+  .separator {
+    margin: 0 0.2rem;
+  }
+  
+  .separatorIcon {
+    width: 12px;
+    height: 12px;
+  }
+  
+  .breadcrumbLink {
+    padding: 0.3rem 0.5rem;
+    
+    .breadcrumbText {
+      font-size: 0.75rem;
+    }
+  }
+  
+  .breadcrumbIcon {
+    font-size: 0.8rem;
+  }
+} 

@@ -1,0 +1,249 @@
+.themeSwitcher {
+  position: relative;
+  display: inline-block;
+}
+
+.themeButton {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.6rem 1rem;
+  background: rgba(26, 26, 46, 0.8);
+  border: 1px solid rgba(255, 215, 0, 0.3);
+  border-radius: 8px;
+  color: #e6e6fa;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+  font-weight: 500;
+  
+  &:hover {
+    background: rgba(255, 215, 0, 0.1);
+    border-color: rgba(255, 215, 0, 0.5);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 15px rgba(255, 215, 0, 0.2);
+  }
+}
+
+.themeIcon {
+  font-size: 1.1rem;
+  transition: all 0.3s ease;
+}
+
+.themeName {
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.dropdownArrow {
+  font-size: 0.8rem;
+  transition: transform 0.3s ease;
+  
+  &.rotated {
+    transform: rotate(180deg);
+  }
+}
+
+.themeDropdown {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  margin-top: 0.5rem;
+  background: rgba(26, 26, 46, 0.98);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 215, 0, 0.3);
+  border-radius: 12px;
+  min-width: 280px;
+  z-index: 1000;
+  box-shadow: 
+    0 8px 30px rgba(0, 0, 0, 0.4),
+    0 0 20px rgba(255, 215, 0, 0.1);
+  overflow: hidden;
+  
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255, 215, 0, 0.3), transparent);
+  }
+}
+
+.dropdownHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 1.2rem;
+  border-bottom: 1px solid rgba(255, 215, 0, 0.2);
+}
+
+.dropdownTitle {
+  color: #ffd700;
+  font-weight: 600;
+  font-size: 1rem;
+}
+
+.closeButton {
+  background: none;
+  border: none;
+  color: #e6e6fa;
+  font-size: 1.2rem;
+  cursor: pointer;
+  padding: 0.3rem;
+  border-radius: 50%;
+  transition: all 0.3s ease;
+  
+  &:hover {
+    background: rgba(255, 215, 0, 0.1);
+    color: #ffd700;
+    transform: scale(1.1);
+  }
+}
+
+.themeOptions {
+  padding: 0.5rem;
+}
+
+.themeOption {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  width: 100%;
+  padding: 0.8rem 1rem;
+  background: none;
+  border: none;
+  color: #e6e6fa;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border-radius: 8px;
+  position: relative;
+  
+  &::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 0;
+    background: linear-gradient(90deg, rgba(255, 215, 0, 0.1), transparent);
+    transition: width 0.3s ease;
+  }
+  
+  &:hover {
+    background: rgba(255, 215, 0, 0.1);
+    color: #ffd700;
+    
+    &::before {
+      width: 100%;
+    }
+    
+    .optionIcon {
+      transform: scale(1.1);
+    }
+  }
+  
+  &.active {
+    background: rgba(255, 215, 0, 0.15);
+    color: #ffd700;
+    border-left: 3px solid #ffd700;
+    
+    .optionIcon {
+      text-shadow: 0 0 8px rgba(255, 215, 0, 0.5);
+    }
+  }
+}
+
+.optionIcon {
+  font-size: 1.2rem;
+  transition: all 0.3s ease;
+}
+
+.optionContent {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.optionName {
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+.optionDesc {
+  font-size: 0.8rem;
+  opacity: 0.7;
+  font-style: italic;
+}
+
+.activeIndicator {
+  color: #ffd700;
+  font-weight: bold;
+  font-size: 1.1rem;
+  text-shadow: 0 0 5px rgba(255, 215, 0, 0.5);
+}
+
+/* 響應式設計 */
+@media (max-width: 768px) {
+  .themeButton {
+    padding: 0.5rem 0.8rem;
+    
+    .themeName {
+      font-size: 0.8rem;
+    }
+  }
+  
+  .themeDropdown {
+    min-width: 250px;
+    right: -50px;
+  }
+  
+  .themeOption {
+    padding: 0.7rem 0.8rem;
+    
+    .optionName {
+      font-size: 0.9rem;
+    }
+    
+    .optionDesc {
+      font-size: 0.75rem;
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .themeButton {
+    padding: 0.4rem 0.6rem;
+    
+    .themeName {
+      display: none;
+    }
+  }
+  
+  .themeDropdown {
+    min-width: 220px;
+    right: -80px;
+  }
+  
+  .dropdownHeader {
+    padding: 0.8rem 1rem;
+  }
+  
+  .dropdownTitle {
+    font-size: 0.9rem;
+  }
+  
+  .themeOption {
+    padding: 0.6rem 0.8rem;
+    
+    .optionName {
+      font-size: 0.85rem;
+    }
+    
+    .optionDesc {
+      font-size: 0.7rem;
+    }
+  }
+} 

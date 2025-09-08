@@ -1,0 +1,79 @@
+require('dotenv').config()
+const express = require('express')
+const methodOverride = require('method-override')
+const path = require('path')
+// 移除 cors 引入
+const app = express()
+const { sequelize } = require('./models')
+const DEFAULT_PORT = parseInt(process.env.PORT || '3000', 10)
+
+// 引入 API 路由模組
+const apiRoutes = require('./api/index')
+
+// 移除 CORS 中間件設定
+
+
+// 中間件設定
+app.use(express.urlencoded({ extended: true }))
+app.use(express.json())
+app.use(methodOverride('_method'))
+
+// 靜態檔案
+app.use(express.static(path.join(__dirname, 'public')))
+// 封面圖片靜態檔案服務
+app.use('/uploads/covers', express.static(path.join(__dirname, 'uploads', 'covers')))
+
+// API 路由設定
+app.use('/api', apiRoutes)
+
+// 404 錯誤處理
+app.use('*', (req, res) => {
+  res.status(404).json({
+    success: false,
+    message: 'API 端點未找到'
+  })
+})
+
+// 錯誤處理中間件
+app.use((err, req, res, next) => {
+  console.error(err.stack)
+  res.status(500).json({
+    success: false,
+    message: '伺服器錯誤',
+    error: err.message
+  })
+})
+
+function listenOnAvailablePort(app, preferredPort) {
+  return new Promise((resolve) => {
+    const server = app.listen(preferredPort)
+    server.on('listening', () => resolve({ server, port: preferredPort }))
+    server.on('error', (err) => {
+      if (err && err.code === 'EADDRINUSE') {
+        const nextPort = preferredPort + 1
+        console.warn(`⚠️  埠號 ${preferredPort} 已被佔用，改嘗試 ${nextPort} ...`)
+        resolve(listenOnAvailablePort(app, nextPort))
+      } else {
+        throw err
+      }
+    })
+  })
+}
+
+async function start() {
+  try {
+    console.log('🔌 測試資料庫連線...')
+    await sequelize.authenticate()
+    console.log('✅ 資料庫連線成功')
+  } catch (error) {
+    console.error('❌ 無法連線至資料庫：', error.message)
+    console.error('👉 請檢查 .env 是否正確設定 DB_HOST/DB_PORT/DB_NAME/DB_USERNAME/DB_PASSWORD 或 DATABASE_URL')
+    process.exit(1)
+  }
+
+  const { port } = await listenOnAvailablePort(app, DEFAULT_PORT)
+  console.log(`🚀 API 服務器正在運行於 http://localhost:${port}`)
+  console.log(`📦 API 路由: /api`)
+}
+
+start()

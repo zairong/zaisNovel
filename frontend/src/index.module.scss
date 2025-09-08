@@ -1,0 +1,196 @@
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Crimson+Text:wght@400;600&display=swap');
+
+:root {
+  font-family: 'Crimson Text', serif;
+  line-height: 1.5;
+  font-weight: 400;
+
+  color-scheme: dark;
+  color: #e6e6fa;
+  background-color: #1a1a2e;
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-text-size-adjust: 100%;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
+  background: 
+    radial-gradient(circle at 20% 80%, rgba(139, 69, 19, 0.3) 0%, transparent 50%),
+    radial-gradient(circle at 80% 20%, rgba(25, 25, 112, 0.4) 0%, transparent 50%),
+    radial-gradient(circle at 40% 40%, rgba(47, 79, 79, 0.3) 0%, transparent 50%),
+    linear-gradient(135deg, #1a1a2e 0%, #16213e 25%, #0f3460 50%, #1a1a2e 75%, #16213e 100%);
+  font-family: 'Crimson Text', serif;
+  color: #e6e6fa;
+  position: relative;
+  overflow-x: hidden;
+}
+
+/* 水彩背景效果 */
+body::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: 
+    radial-gradient(circle at 10% 20%, rgba(255, 215, 0, 0.1) 0%, transparent 40%),
+    radial-gradient(circle at 90% 80%, rgba(255, 140, 0, 0.1) 0%, transparent 40%),
+    radial-gradient(circle at 50% 50%, rgba(138, 43, 226, 0.05) 0%, transparent 60%);
+  pointer-events: none;
+  z-index: -1;
+}
+
+#root {
+  width: 100vw;
+  min-height: 100vh;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+a {
+  font-weight: 500;
+  color: #ffd700;
+  text-decoration: inherit;
+  font-family: 'Crimson Text', serif;
+  transition: all 0.3s ease;
+  
+  &:hover {
+    color: #ffed4e;
+    text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+  }
+}
+
+h1 {
+  font-size: 3.2em;
+  line-height: 1.1;
+  font-family: 'Cinzel', serif;
+  color: #ffd700;
+  text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+}
+
+button {
+  border-radius: 8px;
+  border: 1px solid rgba(255, 215, 0, 0.3);
+  padding: 0.6em 1.2em;
+  font-size: 1em;
+  font-weight: 500;
+  font-family: 'Crimson Text', serif;
+  background-color: rgba(26, 26, 46, 0.8);
+  color: #e6e6fa;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+  
+  &:hover {
+    border-color: #ffd700;
+    background-color: rgba(255, 215, 0, 0.1);
+    color: #ffd700;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(255, 215, 0, 0.2);
+  }
+  
+  &:focus,
+  &:focus-visible {
+    outline: 2px solid #ffd700;
+    outline-offset: 2px;
+  }
+}
+
+/* 自定義滾動條 */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(26, 26, 46, 0.8);
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(135deg, #8b4513, #a0522d);
+  border-radius: 4px;
+  
+  &:hover {
+    background: linear-gradient(135deg, #a0522d, #cd853f);
+  }
+}
+
+/* 選擇文字樣式 */
+::selection {
+  background: rgba(255, 215, 0, 0.3);
+  color: #ffd700;
+}
+
+/* 奧術風格動畫 */
+@keyframes arcaneGlow {
+  0%, 100% {
+    box-shadow: 0 0 10px rgba(255, 215, 0, 0.3);
+  }
+  50% {
+    box-shadow: 0 0 20px rgba(255, 215, 0, 0.6);
+  }
+}
+
+@keyframes watercolorFlow {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+/* 響應式設計 */
+@media (prefers-color-scheme: light) {
+  :root {
+    color: #e6e6fa;
+    background-color: #1a1a2e;
+  }
+  
+  a:hover {
+    color: #ffed4e;
+  }
+  
+  button {
+    background-color: rgba(26, 26, 46, 0.8);
+    color: #e6e6fa;
+  }
+}
+
+@media (max-width: 768px) {
+  h1 {
+    font-size: 2.5em;
+  }
+  
+  body {
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 480px) {
+  h1 {
+    font-size: 2em;
+  }
+  
+  button {
+    padding: 0.5em 1em;
+    font-size: 0.9em;
+  }
+} 

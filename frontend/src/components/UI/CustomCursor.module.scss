@@ -1,0 +1,132 @@
+/* 自定義狙擊鼠標樣式 */
+.customCursor {
+  position: fixed;
+  width: 20px;
+  height: 20px;
+  pointer-events: none;
+  z-index: 9999;
+  mix-blend-mode: difference;
+  transition: transform 0.1s ease;
+  transform: translate(-50%, -50%);
+}
+
+.cursorOuter {
+  position: absolute;
+  width: 40px;
+  height: 40px;
+  border: 2px solid #e45585;
+  border-radius: 50%;
+  background: transparent;
+  box-shadow: 
+    0 0 10px #ad2e58,
+    0 0 20px #ad2e58,
+    0 0 30px #ad2e58,
+    inset 0 0 10px rgba(0, 255, 255, 0.3);
+  animation: neonPulse 2s ease-in-out infinite;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.cursorInner {
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  background: #ff00ff;
+  border-radius: 50%;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  box-shadow: 
+    0 0 5px #ff00ff,
+    0 0 10px #ff00ff,
+    0 0 15px #ff00ff;
+}
+
+.cursorCrosshair {
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.cursorCrosshair::before,
+.cursorCrosshair::after {
+  content: '';
+  position: absolute;
+  background: #00ff00;
+  box-shadow: 0 0 5px #00ff00;
+}
+
+.cursorCrosshair::before {
+  width: 2px;
+  height: 20px;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.cursorCrosshair::after {
+  width: 20px;
+  height: 2px;
+  top: 50%;
+  left: 0;
+  transform: translateY(-50%);
+}
+
+/* 霓虹脈動動畫 */
+@keyframes neonPulse {
+  0%, 100% {
+    box-shadow: 
+      0 0 10px #ad2e58,
+      0 0 20px #ad2e58,
+      0 0 30px #ad2e58,
+      inset 0 0 10px rgba(0, 255, 255, 0.3);
+  }
+  50% {
+    box-shadow: 
+      0 0 15px #ad2e58,
+      0 0 30px #ad2e58,
+      0 0 45px #ad2e58,
+      inset 0 0 15px rgba(0, 255, 255, 0.5);
+  }
+}
+
+/* 點擊效果 */
+.cursorClick {
+  animation: cursorClick 0.3s ease-out;
+}
+
+@keyframes cursorClick {
+  0% {
+    transform: translate(-50%, -50%) scale(1);
+  }
+  50% {
+    transform: translate(-50%, -50%) scale(0.8);
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(1);
+  }
+}
+
+/* 懸停效果 */
+.cursorHover {
+  transform: translate(-50%, -50%) scale(1.2);
+  
+  .cursorOuter {
+    border-color: #ff00ff;
+    box-shadow: 
+      0 0 15px #ff00ff,
+      0 0 30px #ff00ff,
+      0 0 45px #ff00ff,
+      inset 0 0 15px rgba(255, 0, 255, 0.3);
+  }
+  
+  .cursorCrosshair::before,
+  .cursorCrosshair::after {
+    background: #ff00ff;
+    box-shadow: 0 0 8px #ff00ff;
+  }
+}

@@ -1,0 +1,146 @@
+.pageTransition {
+  position: relative;
+  width: 100%;
+  height: 78vh;
+  overflow-y: scroll;
+}
+@media (max-width: 768px) {
+  .pageTransition {
+    height: 88vh;
+  }
+}
+
+.pageContent {
+  width: 100%;
+  height: 100%;
+  transition: all 0.3s ease;
+  
+  .transitioning & {
+    transform: scale(0.95);
+    opacity: 0.3;
+    filter: blur(2px);
+  }
+}
+
+.transitionOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: 
+    radial-gradient(circle at center, rgba(26, 26, 46, 0.95) 0%, rgba(0, 0, 0, 0.98) 100%);
+  backdrop-filter: blur(10px);
+  z-index: 9999;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s ease;
+  
+  &.active {
+    opacity: 1;
+    visibility: visible;
+  }
+}
+
+.transitionSpinner {
+  position: relative;
+  width: 80px;
+  height: 80px;
+}
+
+.spinnerRing {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border: 3px solid transparent;
+  border-top: 3px solid #ffd700;
+  border-radius: 50%;
+  animation: spin 1.5s linear infinite;
+  
+  &:nth-child(1) {
+    animation-delay: 0s;
+    border-top-color: #ffd700;
+  }
+  
+  &:nth-child(2) {
+    animation-delay: 0.5s;
+    border-top-color: #ffed4e;
+    width: 60px;
+    height: 60px;
+    top: 10px;
+    left: 10px;
+  }
+  
+  &:nth-child(3) {
+    animation-delay: 1s;
+    border-top-color: #ffb347;
+    width: 40px;
+    height: 40px;
+    top: 20px;
+    left: 20px;
+  }
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* 奧術魔法效果 */
+.transitionOverlay::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: 
+    radial-gradient(circle at 20% 20%, rgba(255, 215, 0, 0.1) 0%, transparent 50%),
+    radial-gradient(circle at 80% 80%, rgba(255, 140, 0, 0.1) 0%, transparent 50%),
+    radial-gradient(circle at 50% 50%, rgba(138, 43, 226, 0.05) 0%, transparent 60%);
+  animation: magicPulse 2s ease-in-out infinite;
+}
+
+@keyframes magicPulse {
+  0%, 100% {
+    opacity: 0.3;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.6;
+    transform: scale(1.05);
+  }
+}
+
+/* 響應式設計 */
+@media (max-width: 768px) {
+  .transitionSpinner {
+    width: 60px;
+    height: 60px;
+  }
+  
+  .spinnerRing {
+    &:nth-child(2) {
+      width: 45px;
+      height: 45px;
+      top: 7.5px;
+      left: 7.5px;
+    }
+    
+    &:nth-child(3) {
+      width: 30px;
+      height: 30px;
+      top: 15px;
+      left: 15px;
+    }
+  }
+} 

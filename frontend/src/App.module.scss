@@ -1,0 +1,237 @@
+/* 奧術影集風格 - 水彩效果 + 黑魔法風格 */
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Crimson+Text:wght@400;600&display=swap');
+
+/* CSS 變數定義 - 黑魔法風格 */
+:root {
+  --color-primary: #ffd700;
+  --color-secondary: #ffed4e;
+  --color-background: #0a0a0a;
+  --color-surface: #1a0a0a;
+  --color-text: #e6e6fa;
+  --theme-background: #0a0a0a;
+  --theme-surface: #1a0a0a;
+  --dark-magic-purple: #4a0a4a;
+  --dark-magic-red: #8b0000;
+  --dark-magic-green: #006400;
+  --shadow-dark: rgba(0, 0, 0, 0.8);
+  --shadow-purple: rgba(74, 10, 74, 0.6);
+  --shadow-red: rgba(139, 0, 0, 0.5);
+}
+
+/* 全域樣式 */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Crimson Text', serif;
+  background: 
+    radial-gradient(circle at 20% 80%, rgba(139, 0, 0, 0.4) 0%, transparent 50%),
+    radial-gradient(circle at 80% 20%, rgba(74, 10, 74, 0.5) 0%, transparent 50%),
+    radial-gradient(circle at 40% 40%, rgba(0, 100, 0, 0.3) 0%, transparent 50%),
+    radial-gradient(circle at 60% 60%, rgba(0, 0, 0, 0.8) 0%, transparent 50%),
+    linear-gradient(135deg, var(--theme-background) 0%, var(--theme-surface) 25%, #000000 50%, var(--theme-background) 75%, var(--theme-surface) 100%);
+  min-height: 100vh;
+  color: var(--color-text);
+  position: relative;
+  /* 移除 overflow: hidden，允許內容正常顯示 */
+  cursor: none !important;
+}
+
+/* 黑魔法背景效果 */
+body::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: 
+    radial-gradient(circle at 10% 20%, rgba(255, 215, 0, 0.05) 0%, transparent 40%),
+    radial-gradient(circle at 90% 80%, rgba(139, 0, 0, 0.1) 0%, transparent 40%),
+    radial-gradient(circle at 50% 50%, rgba(74, 10, 74, 0.08) 0%, transparent 60%),
+    radial-gradient(circle at 30% 70%, rgba(0, 100, 0, 0.05) 0%, transparent 60%);
+  pointer-events: none;
+  z-index: -1;
+  animation: darkMagicPulse 8s ease-in-out infinite;
+}
+
+/* 黑魔法脈動動畫 */
+@keyframes darkMagicPulse {
+  0%, 100% {
+    opacity: 0.3;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.6;
+    transform: scale(1.02);
+  }
+}
+
+.app {
+  width: 100vw;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  /* 移除 overflow: hidden，允許內容正常顯示 */
+}
+
+/* 載入狀態 - 黑魔法風格 */
+.loadingContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background: 
+    radial-gradient(circle at 20% 80%, rgba(139, 0, 0, 0.4) 0%, transparent 50%),
+    radial-gradient(circle at 80% 20%, rgba(74, 10, 74, 0.5) 0%, transparent 50%),
+    linear-gradient(135deg, #0a0a0a 0%, #1a0a0a 25%, #000000 50%, #0a0a0a 75%, #1a0a0a 100%);
+}
+
+.loadingSpinner {
+  color: #ffd700;
+  font-size: 1.2rem;
+  padding: 2rem;
+  background: rgba(10, 10, 10, 0.9);
+  border-radius: 12px;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 215, 0, 0.3);
+  box-shadow: 
+    0 0 20px rgba(255, 215, 0, 0.2),
+    0 0 40px rgba(139, 0, 0, 0.3),
+    0 0 60px rgba(74, 10, 74, 0.2);
+  animation: darkMagicGlow 2s ease-in-out infinite alternate;
+}
+
+@keyframes darkMagicGlow {
+  0% {
+    box-shadow: 
+      0 0 20px rgba(255, 215, 0, 0.2),
+      0 0 40px rgba(139, 0, 0, 0.3),
+      0 0 60px rgba(74, 10, 74, 0.2);
+  }
+  100% {
+    box-shadow: 
+      0 0 30px rgba(255, 215, 0, 0.4),
+      0 0 60px rgba(139, 0, 0, 0.5),
+      0 0 90px rgba(74, 10, 74, 0.4);
+  }
+}
+
+/* 權限檢查狀態 - 黑魔法風格 */
+.permissionChecking {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 50vh;
+  background: rgba(10, 10, 10, 0.9);
+  border-radius: 12px;
+  margin: 2rem;
+  border: 1px solid rgba(255, 215, 0, 0.3);
+  backdrop-filter: blur(10px);
+  box-shadow: 
+    0 0 20px rgba(139, 0, 0, 0.3),
+    0 0 40px rgba(74, 10, 74, 0.2);
+}
+
+.checkingSpinner {
+  color: #ffd700;
+  font-size: 1rem;
+  padding: 1rem;
+  background: rgba(10, 10, 10, 0.95);
+  border-radius: 8px;
+  backdrop-filter: blur(10px);
+  animation: darkMagicPulse 1.5s ease-in-out infinite;
+  border: 1px solid rgba(255, 215, 0, 0.2);
+  box-shadow: 
+    0 0 10px rgba(255, 215, 0, 0.3),
+    0 0 20px rgba(139, 0, 0, 0.2);
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+    box-shadow: 
+      0 0 10px rgba(255, 215, 0, 0.3),
+      0 0 20px rgba(139, 0, 0, 0.2);
+  }
+  50% {
+    opacity: 0.8;
+    box-shadow: 
+      0 0 20px rgba(255, 215, 0, 0.6),
+      0 0 40px rgba(139, 0, 0, 0.4);
+  }
+}
+
+/* 主要內容區域 - 黑魔法風格 */
+.mainContent {
+  flex: 1;
+  padding: 2rem;
+  overflow-y: auto;
+  position: relative;
+  z-index: 1;
+  
+  &::-webkit-scrollbar {
+    width: 8px;
+  }
+  
+  &::-webkit-scrollbar-track {
+    background: rgba(10, 10, 10, 0.8);
+  }
+  
+  &::-webkit-scrollbar-thumb {
+    background: linear-gradient(135deg, #8b0000, #4a0a4a);
+    border-radius: 4px;
+    
+    &:hover {
+      background: linear-gradient(135deg, #a0522d, #8b4513);
+    }
+  }
+}
+
+/* 響應式設計 */
+@media (max-width: 768px) {
+  .mainContent {
+    padding: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .mainContent {
+    padding: 0.5rem;
+  }
+}
+
+
+
+/* 特定元素保持原有鼠標樣式 */
+button, 
+a, 
+input, 
+textarea, 
+select,
+[role="button"],
+[tabindex] {
+  cursor: none !important;
+}
+
+/* 文字選擇區域保持文本鼠標 */
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="search"],
+input[type="url"],
+textarea {
+  cursor: none !important;
+}
+
+/* 禁用狀態保持禁用鼠標 */
+button:disabled,
+input:disabled,
+textarea:disabled,
+select:disabled {
+  cursor: none !important;
+}
