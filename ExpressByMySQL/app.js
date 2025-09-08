@@ -41,6 +41,11 @@ const apiRoutes = require('./routes/index')
 handleUncaughtException()
 handleUnhandledRejection()
 
+// 設定信任代理（用於生產環境如 Render、Heroku 等）
+if (config.NODE_ENV === 'production') {
+  app.set('trust proxy', 1) // 信任第一個代理
+}
+
 // 安全性中間件
 app.use(basicSecurity)
 app.use(corsConfig)
