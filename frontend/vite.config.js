@@ -12,9 +12,9 @@ export default defineConfig({
     // 等 Nginx 配置完成後再移除
     proxy: {
       '/api': {
-        target: 'http://127.0.0.1:3000',
+        target: 'https://zaisnovel.onrender.com',
         changeOrigin: true,
-        secure: false,
+        secure: true,
         rewrite: (path) => path,
         configure: (proxy, options) => {
           proxy.on('error', (err, req, res) => {
