@@ -1,4 +1,5 @@
-const API_BASE_URL = import.meta.env.VITE_API_BASE || '/api'
+const API_BASE_URL = import.meta.env.VITE_API_BASE || 
+  (import.meta.env.PROD ? 'https://zaisnovel-backend.onrender.com/api' : '/api')
 
 import authService from './authService'
 

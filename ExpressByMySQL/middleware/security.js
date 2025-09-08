@@ -204,6 +204,7 @@ function userAgentFilter(req, res, next) {
 function corsConfig(req, res, next) {
   const allowedOrigins = [
     config.FRONTEND_URL,
+    'https://zaisnovel-frontend.onrender.com',
     'http://localhost:3000',
     'http://localhost:5173',
     'http://127.0.0.1:5173'

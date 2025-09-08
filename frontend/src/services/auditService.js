@@ -58,7 +58,8 @@ class AuditService {
   // 發送到後端
   async sendToBackend(event) {
     try {
-      const API_BASE_URL = import.meta.env.VITE_API_BASE || '/api';
+      const API_BASE_URL = import.meta.env.VITE_API_BASE || 
+        (import.meta.env.PROD ? 'https://zaisnovel-backend.onrender.com/api' : '/api');
       const response = await fetch(`${API_BASE_URL}/audit/log`, {
         method: 'POST',
         headers: { 

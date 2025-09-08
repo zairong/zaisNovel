@@ -7,32 +7,32 @@ export default defineConfig({
   server: {
     port: 5173,
     host: '0.0.0.0',
-    allowedHosts: ['zaisnovel-frontend.onrender.com'],
-    // 暫時恢復 proxy 設定，讓登入功能可以正常工作
-    // 等 Nginx 配置完成後再移除
-    proxy: {
+    // 開發環境 proxy 設定 (僅在開發時使用)
+    proxy: process.env.NODE_ENV === 'development' ? {
       '/api': {
-        target: 'https://zaisnovel.onrender.com',
+        target: process.env.VITE_DEV_PROXY_TARGET || 'http://localhost:3000',
         changeOrigin: true,
-        secure: true,
-        rewrite: (path) => path,
-        configure: (proxy, options) => {
-          proxy.on('error', (err, req, res) => {
-            console.log('proxy error', err);
-          });
-          proxy.on('proxyReq', (proxyReq, req, res) => {
-            proxyReq.setHeader('X-Special-Proxy-Header', 'foobar');
-          });
-          proxy.on('proxyRes', (proxyRes, req, res) => {
-            console.log('Received Response from the Target:', proxyRes.statusCode, req.url);
-          });
-        },
+        secure: false,
+      }
+    } : {}
+  },
+  build: {
+    outDir: 'dist',
+    assetsDir: 'assets',
+    sourcemap: false,
+    minify: 'terser',
+    rollupOptions: {
+      external: ['echarts'],
+      output: {
+        manualChunks: {
+          vendor: ['react', 'react-dom'],
+          router: ['react-router-dom'],
+          ui: ['@mui/material', '@mui/icons-material'],
+        }
       }
     }
   },
-  build: {
-    rollupOptions: {
-      external: ['echarts']
-    }
+  define: {
+    'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV)
   }
 })
