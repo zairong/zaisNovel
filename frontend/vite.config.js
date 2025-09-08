@@ -6,7 +6,7 @@ export default defineConfig({
   plugins: [react()],
   server: {
     port: 5173,
-    host: '127.0.0.1',  // 強制使用 IPv4
+    host: '0.0.0.0',  // 強制使用 IPv4
     // 暫時恢復 proxy 設定，讓登入功能可以正常工作
     // 等 Nginx 配置完成後再移除
     proxy: {
