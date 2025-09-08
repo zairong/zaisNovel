@@ -42,19 +42,19 @@ module.exports = {
   // 開發環境
   development: {
     // 若有提供 DATABASE_URL，則優先使用（例如：mysql://user:pass@host:3306/dbname）
-    use_env_variable: process.env.DATABASE_URL ? 'DATABASE_URL' : undefined,
+    use_env_variable: process.env.DATABASE_URL ,
     ...common
   },
   // 測試環境
   test: {
     // 若有提供 DATABASE_URL，則優先使用
-    use_env_variable: process.env.DATABASE_URL ? 'DATABASE_URL' : undefined,
+    use_env_variable: process.env.DATABASE_URL ,
     ...common
   },
   // 生產環境
   production: {
     // 生產環境建議使用 DATABASE_URL
-    use_env_variable: 'DATABASE_URL',
+    use_env_variable: process.env.DATABASE_URL ,
     ...common
   }
 }
