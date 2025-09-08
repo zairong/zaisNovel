@@ -1,46 +1,71 @@
 const { User, AuditLog } = require('../models')
 const { Op } = require('sequelize')
 const { generateToken } = require('../middleware/auth')
+const { validationSchemas } = require('../middleware/validation')
 
 // 註冊
 async function register(req, res) {
-  const { username, email, password, age_range } = req.body
-  if (!username || !email || !password) {
-    return res.status(400).json({ success: false, message: '請提供用戶名、電子郵件和密碼' })
-  }
+  try {
+    // 輸入驗證
+    const { error, value } = validationSchemas.userRegister.validate(req.body)
+    if (error) {
+      return res.status(400).json({
+        success: false,
+        message: '輸入驗證失敗',
+        errors: error.details.map(detail => ({
+          field: detail.path.join('.'),
+          message: detail.message
+        }))
+      })
+    }
 
-  // 驗證年齡範圍
-  const validAgeRanges = ['10~20', '20~30', '30~40', '40~50', '50~60', '60以上']
-  if (age_range && !validAgeRanges.includes(age_range)) {
-    return res.status(400).json({ success: false, message: '請選擇有效的年齡範圍' })
-  }
+    const { username, email, password, age_range } = value
 
-  const existingUser = await User.findOne({ where: { [Op.or]: [{ username }, { email }] } })
-  if (existingUser) {
-    return res.status(400).json({ success: false, message: '用戶名或電子郵件已存在' })
-  }
+    const existingUser = await User.findOne({ where: { [Op.or]: [{ username }, { email }] } })
+    if (existingUser) {
+      return res.status(400).json({ success: false, message: '用戶名或電子郵件已存在' })
+    }
 
-  const user = await User.create({ username, email, password, role: 'user', age_range })
-  const token = generateToken(user)
-  return res.status(201).json({ success: true, message: '註冊成功', data: { user: user.toJSON(), token } })
+    const user = await User.create({ username, email, password, role: 'user', age_range })
+    const token = generateToken(user)
+    return res.status(201).json({ success: true, message: '註冊成功', data: { user: user.toJSON(), token } })
+  } catch (err) {
+    console.error('註冊錯誤:', err)
+    return res.status(500).json({ success: false, message: '註冊過程發生錯誤' })
+  }
 }
 
 // 登入
 async function login(req, res) {
-  const { username, password } = req.body
-  if (!username || !password) {
-    return res.status(400).json({ success: false, message: '請提供用戶名和密碼' })
+  try {
+    // 輸入驗證
+    const { error, value } = validationSchemas.userLogin.validate(req.body)
+    if (error) {
+      return res.status(400).json({
+        success: false,
+        message: '輸入驗證失敗',
+        errors: error.details.map(detail => ({
+          field: detail.path.join('.'),
+          message: detail.message
+        }))
+      })
+    }
+
+    const { username, password } = value
+    const user = await User.findOne({ where: { [Op.or]: [{ username }, { email: username }] } })
+    if (!user) return res.status(401).json({ success: false, message: '用戶名或密碼錯誤' })
+
+    const isValidPassword = await user.validatePassword(password)
+    if (!isValidPassword) return res.status(401).json({ success: false, message: '用戶名或密碼錯誤' })
+    if (!user.is_active) return res.status(401).json({ success: false, message: '帳戶已被停用' })
+
+    await user.update({ last_login: new Date() })
+    const token = generateToken(user)
+    return res.json({ success: true, message: '登入成功', data: { user: user.toJSON(), token } })
+  } catch (err) {
+    console.error('登入錯誤:', err)
+    return res.status(500).json({ success: false, message: '登入過程發生錯誤' })
   }
-  const user = await User.findOne({ where: { [Op.or]: [{ username }, { email: username }] } })
-  if (!user) return res.status(401).json({ success: false, message: '用戶名或密碼錯誤' })
-
-  const isValidPassword = await user.validatePassword(password)
-  if (!isValidPassword) return res.status(401).json({ success: false, message: '用戶名或密碼錯誤' })
-  if (!user.is_active) return res.status(401).json({ success: false, message: '帳戶已被停用' })
-
-  await user.update({ last_login: new Date() })
-  const token = generateToken(user)
-  return res.json({ success: true, message: '登入成功', data: { user: user.toJSON(), token } })
 }
 
 // 取得當前用戶

@@ -1,0 +1,36 @@
+services:
+  # 後端 API 服務
+  - type: web
+    name: zaisnovel-backend
+    env: node
+    plan: free
+    buildCommand: npm install && npm run build:prod
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: DATABASE_URL
+        fromDatabase:
+          name: zaisnovel-db
+          property: connectionString
+      - key: JWT_SECRET
+        generateValue: true
+      - key: FRONTEND_URL
+        value: https://your-frontend-app.onrender.com
+      - key: BCRYPT_ROUNDS
+        value: 12
+      - key: JWT_EXPIRES_IN
+        value: 24h
+      - key: UPLOAD_MAX_SIZE
+        value: 10485760
+      - key: RATE_LIMIT_WINDOW_MS
+        value: 900000
+      - key: RATE_LIMIT_MAX_REQUESTS
+        value: 100
+
+# PostgreSQL 資料庫
+databases:
+  - name: zaisnovel-db
+    plan: free
+    databaseName: zaisnovel
+    user: zaisnovel_user
