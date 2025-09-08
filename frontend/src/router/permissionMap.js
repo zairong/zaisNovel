@@ -61,10 +61,6 @@ export const PERMISSION_MAP = {
     about: {
       requiresAuth: false,
       permissions: []
-    },
-    chapterTest: {
-      requiresAuth: false,
-      permissions: []
     }
   },
 

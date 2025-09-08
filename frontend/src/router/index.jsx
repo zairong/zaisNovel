@@ -7,9 +7,6 @@ import EbookList from '../components/Ebook/EbookList'
 import EbookReader from '../components/Ebook/EbookReader'
 import EbookUpload from '../components/Ebook/EbookUpload'
 import EbookEditor from '../components/Ebook/EbookEditor'
-import ChapterTest from '../components/Test/ChapterTest'
-import AuthTest from '../components/Test/AuthTest'
-import RouteAnimationTest from '../components/Test/RouteAnimationTest'
 import UserLibrary from '../components/UserLibrary/UserLibrary'
 import UserManagement from '../components/Admin/UserManagement'
 import AuthPage from '../components/Auth/AuthPage'
@@ -157,9 +154,6 @@ function AppRoutes({ userPermissions = {} }) {
       <Route path="/ebooks/:id/edit" element={<EbookEditor userPermissions={userPermissions} />} />
       <Route path="/ebooks/upload" element={<EbookUpload userPermissions={userPermissions} />} />
       <Route path="/about" element={<About userPermissions={userPermissions} />} />
-      <Route path="/chapter-test" element={<ChapterTest userPermissions={userPermissions} />} />
-      <Route path="/auth-test" element={<AuthTest />} />
-      <Route path="/route-animation-test" element={<RouteAnimationTest />} />
     </Routes>
   )
 }
