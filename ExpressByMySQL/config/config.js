@@ -43,12 +43,6 @@ module.exports = {
   development: {
     // 若有提供 DATABASE_URL，則優先使用（例如：mysql://user:pass@host:3306/dbname）
     use_env_variable: process.env.DATABASE_URL ? 'DATABASE_URL' : undefined,
-    username: process.env.DB_USERNAME || '',
-    password: process.env.DB_PASSWORD || '',
-    database: process.env.DB_NAME || 'books',
-    host: process.env.DB_HOST || '127.0.0.1',
-    port: parseInt(process.env.DB_PORT || '3306', 10),
-    ...common
   },
   // 測試環境
   test: {
