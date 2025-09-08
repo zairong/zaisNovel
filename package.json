@@ -5,8 +5,8 @@
   "main": "ExpressByMySQL/app.js",
   "scripts": {
     "start": "cd ExpressByMySQL && npm install && npx sequelize-cli db:migrate --config ./config/config.js --migrations-path ./migrations && node app.js",
-    "build": "cd ExpressByMySQL && npm install",
-    "heroku-postbuild": "cd ExpressByMySQL && npm install"
+    "build": "cd frontend && npm install && npm run build",
+    "heroku-postbuild": "cd ExpressByMySQL && npm install && cd ../frontend && npm install"
   },
   "keywords": ["nodejs", "express", "postgresql", "books"],
   "author": "",
