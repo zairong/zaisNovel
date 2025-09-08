@@ -5,7 +5,7 @@
   "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node app.js",
+    "start": "npx sequelize-cli db:migrate && node app.js",
     "init-db": "node init-database.js",
     "init-admin": "node init-admin.js",
     "setup": "node setup.js",
