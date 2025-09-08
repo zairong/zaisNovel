@@ -28,12 +28,10 @@ const validationSchemas = {
     password: Joi.string()
       .min(6)
       .max(255)
-      .pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d@$!%*?&]{6,}$/)
       .required()
       .messages({
         'string.min': '密碼至少6個字符',
         'string.max': '密碼最多255個字符',
-        'string.pattern.base': '密碼必須包含至少一個大寫字母、一個小寫字母和一個數字',
         'any.required': '密碼為必填項'
       }),
     age_range: Joi.string()
@@ -158,12 +156,10 @@ const validationSchemas = {
     newPassword: Joi.string()
       .min(6)
       .max(255)
-      .pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d@$!%*?&]{6,}$/)
       .required()
       .messages({
         'string.min': '新密碼至少6個字符',
         'string.max': '新密碼最多255個字符',
-        'string.pattern.base': '新密碼必須包含至少一個大寫字母、一個小寫字母和一個數字',
         'any.required': '新密碼為必填項'
       })
   }),
