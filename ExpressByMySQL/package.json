@@ -9,6 +9,8 @@
     "init-db": "node init-database.js",
     "init-admin": "node init-admin.js",
     "setup": "node setup.js",
+    "migrate": "sequelize-cli db:migrate --config ./config/config.js --migrations-path ./migrations",
+    "start:deploy": "npm run setup && npm run migrate && node scripts/check-books-table.js && node app.js",
     "db:migrate": "sequelize-cli db:migrate --config ./config/config.js --migrations-path ./migrations",
     "db:migrate:undo": "sequelize-cli db:migrate:undo --config ./config/config.js --migrations-path ./migrations",
     "db:migrate:status": "sequelize-cli db:migrate:status --config ./config/config.js --migrations-path ./migrations",
@@ -26,9 +28,8 @@
     "multer": "^2.0.2",
     "pg": "^8.16.3",
     "pg-hstore": "^2.3.4",
-    "sequelize": "^6.37.7"
-  },
-  "devDependencies": {
+    "sequelize": "^6.37.7",
     "sequelize-cli": "^6.6.3"
-  }
+  },
+  "devDependencies": {}
 }
