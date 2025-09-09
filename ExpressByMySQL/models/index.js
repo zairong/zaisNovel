@@ -3,40 +3,18 @@
 const fs = require('fs'); // 檔案系統模組  
 const path = require('path'); // 路徑模組
 const Sequelize = require('sequelize'); // ORM 模組
-// 確保無論從哪個工作目錄啟動，都讀取 ExpressByMySQL/.env
-const envPath = path.resolve(__dirname, '../.env');
-console.log('🔍 .env 檔案路徑:', envPath);
-console.log('🔍 .env 檔案是否存在:', require('fs').existsSync(envPath));
 
-// 強制重新載入 .env 檔案
-console.log('🔍 嘗試載入 .env 檔案...');
-const result = require('dotenv').config({ path: envPath, debug: true });
-if (result.error) {
-  console.error('❌ 載入 .env 檔案失敗:', result.error);
-} else {
-  console.log('✅ .env 檔案載入成功');
-  console.log('🔍 dotenv 結果:', result);
+// 只在開發環境且沒有關鍵環境變數時載入 .env 文件
+if (!process.env.DATABASE_URL && !process.env.DB_HOST && process.env.NODE_ENV !== 'production') {
+  const envPath = path.resolve(__dirname, '../.env');
+  if (fs.existsSync(envPath)) {
+    require('dotenv').config({ path: envPath });
+    console.log('🔍 已載入 .env 檔案');
+  }
 }
 
-const process = require('process'); // 進程模組
-
-// 立即檢查環境變數是否被載入
-console.log('🔍 立即檢查環境變數:');
-console.log('DB_HOST:', process.env.DB_HOST);
-console.log('DB_PORT:', process.env.DB_PORT);
-console.log('DB_NAME:', process.env.DB_NAME);
-console.log('DB_USERNAME:', process.env.DB_USERNAME);
-console.log('DB_PASSWORD:', process.env.DB_PASSWORD ? '[已設定]' : '[未設定]');
 const basename = path.basename(__filename); // 檔案名稱
 const env = process.env.NODE_ENV || 'development'; // 環境變數
-
-// 調試：再次檢查環境變數
-console.log('🔍 環境變數再次檢查:');
-console.log('DB_HOST:', process.env.DB_HOST);
-console.log('DB_PORT:', process.env.DB_PORT);
-console.log('DB_NAME:', process.env.DB_NAME);
-console.log('DB_USERNAME:', process.env.DB_USERNAME);
-console.log('DB_PASSWORD:', process.env.DB_PASSWORD ? '[已設定]' : '[未設定]');
 
 const allConfig = require(__dirname + '/../config/config.js');
 const config = allConfig[env]; // 對應環境的設定
