@@ -96,7 +96,7 @@ JWT_EXPIRES_IN=24h
 
 #### 前端環境變數
 ```env
-VITE_API_BASE=<your-backend-api-url>
+API_BASE_URL=<your-backend-api-url>
 ```
 
 ## 🔧 開發指令
