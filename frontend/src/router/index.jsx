@@ -13,6 +13,7 @@ import AuthPage from '../components/Auth/AuthPage'
 import { getPageConfig } from './permissionMap'
 import { Icon } from '../components/icons'
 import UserInfo from '../components/UserInfo/UserInfo'
+import NotFound from '../components/NotFound/NotFound'
 
 // 路由配置 - 使用統一權限管理系統
 const routes = [
@@ -136,7 +137,16 @@ const routes = [
       iconComponent: <Icon name="about" size={20} />
     }
   },
-
+  {
+    path: '*',
+    element: <NotFound />,
+    title: '404 Not Found',
+    description: '頁面不存在',
+    meta: {
+      requiresAuth: false,
+      permissions: []
+    }
+  }
 ]
 
 // 路由元件
@@ -154,6 +164,7 @@ function AppRoutes({ userPermissions = {} }) {
       <Route path="/ebooks/:id/edit" element={<EbookEditor userPermissions={userPermissions} />} />
       <Route path="/ebooks/upload" element={<EbookUpload userPermissions={userPermissions} />} />
       <Route path="/about" element={<About userPermissions={userPermissions} />} />
+      <Route path="*" element={<NotFound />} />
     </Routes>
   )
 }
