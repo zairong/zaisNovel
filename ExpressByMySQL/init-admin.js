@@ -19,7 +19,7 @@ async function initAdmin() {
     const adminUser = await User.create({
       username: 'admin',
       email: 'admin@example.com',
-      password: 'Admin123', // 符合驗證規則的密碼，會自動加密
+      password: 'admin', // 會自動加密
       role: 'admin',
       is_active: true
     });
@@ -33,7 +33,7 @@ async function initAdmin() {
     console.log('');
     console.log('🔑 登入資訊：');
     console.log('   用戶名: admin');
-    console.log('   密碼: Admin123');
+    console.log('   密碼: admin');
     console.log('');
     console.log('⚠️  請在首次登入後立即更改密碼！');
 

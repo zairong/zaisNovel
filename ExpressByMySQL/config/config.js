@@ -2,16 +2,15 @@
 require('dotenv').config()
 
 /**
- * PostgreSQL 資料庫配置
  * 推薦在開發與測試環境使用個別的環境變數（DB_HOST/DB_PORT/DB_NAME/DB_USERNAME/DB_PASSWORD）
- * 在生產環境可使用 DATABASE_URL 一次性指定（例如：postgresql://user:pass@host:5432/dbname）
+ * 在生產環境可使用 DATABASE_URL 一次性指定（例如：mysql://user:pass@host:3306/dbname）
  */
 
 const common = {
   // 資料庫類型
   dialect: 'postgres',
   // 是否顯示 SQL 語句
-  logging: process.env.NODE_ENV === 'development' ? console.log : false,
+  logging: false,
   // 連線池設定
   pool: {
     // 最大連線數
@@ -25,52 +24,41 @@ const common = {
   },
   // 時區
   timezone: '+08:00',
-  // PostgreSQL 專用設定
+  // 在資料表層級設定編碼與排序規則（避免將 collate 傳入連線造成 mysql2 警告）
   define: {
-    // 自動添加時間戳
-    timestamps: true,
-    // 使用下劃線命名
-    underscored: false,
-    // 凍結表名
-    freezeTableName: false
+    // 編碼
+    charset: 'utf8mb4',
+    // 排序規則
+    collate: 'utf8mb4_unicode_ci'
   },
-  // PostgreSQL 連線選項
+  // 資料庫選項
   dialectOptions: {
-    // SSL 設定（Render 等雲端平台需要）
-    ssl: process.env.NODE_ENV === 'production' ? {
-      require: true,
-      rejectUnauthorized: false
-    } : false,
-    // 連線超時
-    connectTimeout: 20000,
-    // 查詢超時
-    statement_timeout: 10000,
-    // 閒置超時
-    idle_in_transaction_session_timeout: 10000
+    // 編碼
+    charset: 'utf8mb4'
   }
 }
 
 module.exports = {
   // 開發環境
   development: {
-    // 若有提供 DATABASE_URL，則優先使用
-    use_env_variable: process.env.DATABASE_URL ? 'DATABASE_URL' : null,
-    host: process.env.DB_HOST || 'localhost',
-    port: process.env.DB_PORT || 5432,
-    database: process.env.DB_NAME || 'zaisnovel_dev',
-    username: process.env.DB_USERNAME || 'postgres',
+    // 若有提供 DATABASE_URL，則優先使用（例如：mysql://user:pass@host:3306/dbname）
+    use_env_variable: process.env.DATABASE_URL ? 'DATABASE_URL' : undefined,
+    username: process.env.DB_USERNAME || '',
     password: process.env.DB_PASSWORD || '',
+    database: process.env.DB_NAME || 'books',
+    host: process.env.DB_HOST || '127.0.0.1',
+    port: parseInt(process.env.DB_PORT || '3306', 10),
     ...common
   },
   // 測試環境
   test: {
-    // 測試資料庫
-    use_env_variable: process.env.TEST_DATABASE_URL ? 'TEST_DATABASE_URL' : null,
-    host: process.env.DB_HOST || 'localhost',
-    port: process.env.DB_PORT || 5432,
-    database: process.env.DB_NAME_TEST || 'zaisnovel_test',
-    username: process.env.DB_USERNAME || 'postgres',
+    // 若有提供 DATABASE_URL，則優先使用
+    use_env_variable: process.env.DATABASE_URL ? 'DATABASE_URL' : undefined,
+    username: process.env.DB_USERNAME || '',
     password: process.env.DB_PASSWORD || '',
+    database: process.env.DB_NAME || 'books',
+    host: process.env.DB_HOST || '127.0.0.1',
+    port: parseInt(process.env.DB_PORT || '3306', 10),
     ...common
   },
   // 生產環境

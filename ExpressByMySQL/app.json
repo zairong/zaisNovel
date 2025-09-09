@@ -1,0 +1,26 @@
+{
+  "name": "ebook-platform-backend",
+  "description": "Ebook platform backend API",
+  "repository": "https://github.com/yourusername/ebook-platform",
+  "logo": "",
+  "keywords": ["node", "express", "mysql", "ebook"],
+  "env": {
+    "NODE_ENV": {
+      "description": "Environment setting",
+      "value": "production"
+    },
+    "DATABASE_URL": {
+      "description": "MySQL database URL",
+      "required": true
+    },
+    "JWT_SECRET": {
+      "description": "JWT secret key",
+      "generator": "secret"
+    }
+  },
+  "addons": [
+    {
+      "plan": "cleardb:ignite"
+    }
+  ]
+}

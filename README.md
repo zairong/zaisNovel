@@ -99,6 +99,34 @@ JWT_EXPIRES_IN=24h
 API_BASE_URL=<your-backend-api-url>
 ```
 
+## 部署到 Render
+
+1. **建立 Render Web Service**
+   - 登入 Render 平台並創建一個新的 Web Service。
+   - 連接到您的 GitHub 儲存庫。
+   - 選擇正確的分支進行部署。
+
+2. **設置環境變數**
+   - 在 Render 的環境變數設置中，添加所有必要的變數，如 `DATABASE_URL`、`DB_USERNAME`、`DB_PASSWORD`、`DB_NAME`、`DB_HOST`、`DB_PORT`。
+
+3. **配置部署命令**
+   - 在 Render 的部署設置中，設置以下命令：
+     - **安裝依賴**：`npm install`
+     - **構建應用**：`npm run build`
+     - **啟動服務**：`npm start`
+
+4. **健康檢查**
+   - 設定健康檢查路徑，例如 `/api/health`，以確保服務正常運行。
+
+5. **日誌管理**
+   - 確保日誌輸出到標準輸出，以便在 Render 平台上查看。
+
+6. **自動擴展**
+   - 根據流量需求設定自動擴展策略。
+
+7. **SSL 支持**
+   - 如果需要 HTTPS，請確保配置 SSL 憑證。
+
 ## 🔧 開發指令
 
 ### 後端

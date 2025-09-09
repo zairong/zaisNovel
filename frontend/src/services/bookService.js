@@ -1,8 +1,7 @@
 // 書籍服務 - 處理與後端 API 的交互
 import authService from './authService'
-// 生產環境使用絕對 URL，開發環境使用 Vite 代理
-const API_BASE_URL = import.meta.env.API_BASE_URL || 
-  (import.meta.env.PROD ? 'https://zaisnovel-backend.onrender.com/api' : '/api')
+// 開發預設走 Vite 代理，避免 CORS；如需直連後端請設定 VITE_API_BASE
+const API_BASE_URL = import.meta.env.VITE_API_BASE || '/api'
 
 class BookService {
   // 取得所有書籍

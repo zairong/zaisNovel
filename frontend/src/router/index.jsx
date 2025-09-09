@@ -1,41 +1,35 @@
 import React from 'react'
 import { Routes, Route } from 'react-router-dom'
-// import Home from '../components/Home/Home'
+import Home from '../components/Home/Home'
 import Books from '../components/Books/Books'
 import About from '../components/About/About'
 import EbookList from '../components/Ebook/EbookList'
 import EbookReader from '../components/Ebook/EbookReader'
 import EbookUpload from '../components/Ebook/EbookUpload'
 import EbookEditor from '../components/Ebook/EbookEditor'
+import ChapterTest from '../components/Test/ChapterTest'
+import AuthTest from '../components/Test/AuthTest'
+import RouteAnimationTest from '../components/Test/RouteAnimationTest'
 import UserLibrary from '../components/UserLibrary/UserLibrary'
 import UserManagement from '../components/Admin/UserManagement'
 import AuthPage from '../components/Auth/AuthPage'
 import { getPageConfig } from './permissionMap'
 import { Icon } from '../components/icons'
 import UserInfo from '../components/UserInfo/UserInfo'
-import NotFound from '../components/NotFound'
-import Demo1 from '../components/Demo1/index'
 
 // 路由配置 - 使用統一權限管理系統
 const routes = [
   {
     path: '/',
-    element: <Demo1 />,
+    element: <Home />,
     title: '首頁',
     description: '書籍管理系統首頁',
-
+    meta: {
+      ...getPageConfig('home'), // 自動獲取認證要求和權限
+      icon: 'home',
+      iconComponent: <Icon name="home" size={20} />
+    }
   },
-  // {
-  //   path: '/',
-  //   element: <Home />,
-  //   title: '首頁',
-  //   description: '書籍管理系統首頁',
-  //   meta: {
-  //     ...getPageConfig('home'), // 自動獲取認證要求和權限
-  //     icon: 'home',
-  //     iconComponent: <Icon name="home" size={20} />
-  //   }
-  // },
   {
     path: '/auth',
     element: <AuthPage />,
@@ -145,24 +139,14 @@ const routes = [
       iconComponent: <Icon name="about" size={20} />
     }
   },
-  {
-    path: '*',
-    element: <NotFound />,
-    title: '404 Not Found',
-    description: '頁面不存在',
-    meta: {
-      requiresAuth: false,
-      permissions: []
-    }
-  }
+
 ]
 
 // 路由元件
 function AppRoutes({ userPermissions = {} }) {
   return (
     <Routes>
-      <Route path="/" element={<Demo1  />} />
-      {/* <Route path="/" element={<Home userPermissions={userPermissions} />} /> */}
+      <Route path="/" element={<Home userPermissions={userPermissions} />} />
       <Route path="/auth" element={<AuthPage userPermissions={userPermissions} />} />
       <Route path="/books" element={<Books userPermissions={userPermissions} />} />
       <Route path="/my-library" element={<UserLibrary userPermissions={userPermissions} />} />
@@ -173,7 +157,9 @@ function AppRoutes({ userPermissions = {} }) {
       <Route path="/ebooks/:id/edit" element={<EbookEditor userPermissions={userPermissions} />} />
       <Route path="/ebooks/upload" element={<EbookUpload userPermissions={userPermissions} />} />
       <Route path="/about" element={<About userPermissions={userPermissions} />} />
-      {/* <Route path="*" element={<NotFound />} /> */}
+      <Route path="/chapter-test" element={<ChapterTest userPermissions={userPermissions} />} />
+      <Route path="/auth-test" element={<AuthTest />} />
+      <Route path="/route-animation-test" element={<RouteAnimationTest />} />
     </Routes>
   )
 }

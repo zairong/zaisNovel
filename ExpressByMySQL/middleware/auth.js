@@ -4,17 +4,9 @@ const jwt = require('jsonwebtoken');
 const { User } = require('../models');
 // 引入 AuditLog 模型
 const { AuditLog } = require('../models');
-// 引入環境變數配置
-const { getEnvironmentConfig } = require('../config/env-validation');
 
-// 獲取環境配置
-const config = getEnvironmentConfig();
-const JWT_SECRET = config.JWT_SECRET;
-
-// 確保 JWT_SECRET 存在
-if (!JWT_SECRET) {
-  throw new Error('JWT_SECRET 必須在環境變數中設定');
-}
+// JWT 密鑰（在生產環境中應該使用環境變數）
+const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key-change-in-production';
 
 // 生成 JWT Token
 const generateToken = (user) => {
@@ -26,7 +18,7 @@ const generateToken = (user) => {
       role: user.role 
     },
     JWT_SECRET,
-    { expiresIn: config.JWT_EXPIRES_IN }
+    { expiresIn: '24h' }
   );
 };
 

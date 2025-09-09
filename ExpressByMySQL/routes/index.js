@@ -30,7 +30,7 @@ router.get('/', (req, res) => {
   // 返回 API 端點
   res.json({
     // 訊息
-    message: '歡迎使用 Express PostgreSQL API',
+    message: '歡迎使用 Express MySQL API',
     // 版本
     version: '1.0.0',
     // 端點

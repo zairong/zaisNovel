@@ -1,93 +1,48 @@
 require('dotenv').config()
-
-// 驗證環境變數
-const { validateEnvironment, getEnvironmentConfig } = require('./config/env-validation')
-validateEnvironment()
-
 const express = require('express')
 const methodOverride = require('method-override')
 const path = require('path')
+// 移除 cors 引入
 const app = express()
 const { sequelize } = require('./models')
-
-// 獲取環境配置
-const config = getEnvironmentConfig()
-const DEFAULT_PORT = config.PORT
-
-// 引入安全性中間件
-const { 
-  basicSecurity, 
-  apiRateLimit, 
-  corsConfig, 
-  sqlInjectionProtection,
-  requestSizeLimit
-} = require('./middleware/security')
-
-// 引入錯誤處理中間件
-const { 
-  globalErrorHandler, 
-  notFoundHandler, 
-  handleUncaughtException, 
-  handleUnhandledRejection 
-} = require('./middleware/errorHandler')
-
-// 引入驗證中間件
-const { sanitizeInput } = require('./middleware/validation')
+const DEFAULT_PORT = parseInt(process.env.PORT || '3000', 10)
 
 // 引入 API 路由模組
-const apiRoutes = require('./routes/index')
+const apiRoutes = require('./api/index')
 
-// 設置未捕獲異常處理
-handleUncaughtException()
-handleUnhandledRejection()
+// 移除 CORS 中間件設定
 
-// 設定信任代理（用於生產環境如 Render、Heroku 等）
-if (config.NODE_ENV === 'production') {
-  app.set('trust proxy', 1) // 信任第一個代理
-}
 
-// 安全性中間件
-app.use(basicSecurity)
-app.use(corsConfig)
-app.use(apiRateLimit)
-app.use(requestSizeLimit('10mb'))
-app.use(sqlInjectionProtection)
-
-// 基本中間件設定
-app.use(express.urlencoded({ extended: true, limit: '10mb' }))
-app.use(express.json({ limit: '10mb' }))
+// 中間件設定
+app.use(express.urlencoded({ extended: true }))
+app.use(express.json())
 app.use(methodOverride('_method'))
-
-// 輸入清理中間件
-app.use(sanitizeInput)
 
 // 靜態檔案
 app.use(express.static(path.join(__dirname, 'public')))
 // 封面圖片靜態檔案服務
 app.use('/uploads/covers', express.static(path.join(__dirname, 'uploads', 'covers')))
 
-// 健康檢查端點（用於 Render 等平台的監控）
-app.get('/', (req, res) => {
-  res.json({
-    success: true,
-    message: 'zaisNovel API 服務正常運行',
-    timestamp: new Date().toISOString(),
-    version: '1.0.0'
-  })
-})
-
-app.head('/', (req, res) => {
-  res.status(200).end()
-})
-
 // API 路由設定
 app.use('/api', apiRoutes)
 
 // 404 錯誤處理
-app.use('*', notFoundHandler)
+app.use('*', (req, res) => {
+  res.status(404).json({
+    success: false,
+    message: 'API 端點未找到'
+  })
+})
 
-// 全域錯誤處理中間件
-app.use(globalErrorHandler)
+// 錯誤處理中間件
+app.use((err, req, res, next) => {
+  console.error(err.stack)
+  res.status(500).json({
+    success: false,
+    message: '伺服器錯誤',
+    error: err.message
+  })
+})
 
 function listenOnAvailablePort(app, preferredPort) {
   return new Promise((resolve) => {
@@ -116,15 +71,9 @@ async function start() {
     process.exit(1)
   }
 
-  const { server, port } = await listenOnAvailablePort(app, DEFAULT_PORT)
+  const { port } = await listenOnAvailablePort(app, DEFAULT_PORT)
   console.log(`🚀 API 服務器正在運行於 http://localhost:${port}`)
   console.log(`📦 API 路由: /api`)
-  console.log(`🛡️  安全性中間件已啟用`)
-  console.log(`⚡ 環境模式: ${config.NODE_ENV}`)
-
-  // 設置優雅關閉
-  const { handleGracefulShutdown } = require('./middleware/errorHandler')
-  handleGracefulShutdown(server)
 }
 
 start()

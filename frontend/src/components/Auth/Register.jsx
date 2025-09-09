@@ -36,13 +36,6 @@ const Register = ({ onRegister, onSwitchToLogin, loading }) => {
       return false;
     }
 
-    // 檢查用戶名格式
-    const usernameRegex = /^[a-zA-Z0-9_]+$/;
-    if (!usernameRegex.test(formData.username)) {
-      setError('用戶名只能包含字母、數字和下劃線');
-      return false;
-    }
-
     if (formData.password !== formData.confirmPassword) {
       setError('密碼確認不匹配');
       return false;
@@ -99,7 +92,7 @@ const Register = ({ onRegister, onSwitchToLogin, loading }) => {
               value={formData.username}
               onChange={handleChange}
               className={classes.formInput}
-              placeholder="請輸入用戶名（至少3個字符，只能包含字母、數字和下劃線）"
+              placeholder="請輸入用戶名（至少3個字符）"
               disabled={loading}
             />
           </div>
