@@ -5,7 +5,7 @@ if (!process.env.DATABASE_URL && !process.env.DB_HOST) {
 const express = require('express')
 const methodOverride = require('method-override')
 const path = require('path')
-// 移除 cors 引入
+const cors = require('cors')
 const app = express()
 const { sequelize } = require('./models')
 const DEFAULT_PORT = parseInt(process.env.PORT || '3000', 10)
@@ -13,8 +13,21 @@ const DEFAULT_PORT = parseInt(process.env.PORT || '3000', 10)
 // 引入 API 路由模組
 const apiRoutes = require('./api/index')
 
-// 移除 CORS 中間件設定
+// CORS 中間件設定
+const corsOptions = {
+  origin: [
+    'https://zaisnovel-frontend.onrender.com',
+    'http://localhost:3000',
+    'http://localhost:5173',
+    'http://127.0.0.1:3000',
+    'http://127.0.0.1:5173'
+  ],
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
+}
 
+app.use(cors(corsOptions))
 
 // 中間件設定
 app.use(express.urlencoded({ extended: true }))
