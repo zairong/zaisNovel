@@ -3,14 +3,18 @@ import analyticsService from '../../services/analyticsService';
 import { useAuth } from '../../hooks/useAuth';
 import classes from './UserInfo.module.scss';
 
-// 動態載入 ECharts（避免初載負擔）
-let echartsLib = null;
+// 暫時禁用 ECharts 以修復構建問題
 async function ensureEcharts() {
-  if (!echartsLib) {
-    const mod = await import('echarts');
-    echartsLib = mod.default || mod;
-  }
-  return echartsLib;
+  console.info('圖表功能暫時禁用，將在後續版本中重新啟用');
+  // 返回一個模擬的 echarts 對象以避免錯誤
+  return {
+    init: () => ({
+      setOption: () => {},
+      clear: () => {},
+      dispose: () => {},
+      resize: () => {}
+    })
+  };
 }
 
 function GranularityTabs({ value, onChange }) {
