@@ -103,7 +103,7 @@ const Login = ({ onLogin, onSwitchToRegister, loading }) => {
 
         <div className={classes.demoInfo}>
           <h4>測試帳戶：</h4>
-          <p><strong>管理員：</strong> admin / Admin123</p>
+          <p><strong>管理員：</strong> admin / Admin123 </p>
           <p><strong>一般用戶：</strong> 請先註冊</p>
         </div>
       </div>
