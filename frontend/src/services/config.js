@@ -7,9 +7,9 @@ const config = {
   // 生產環境
   production: {
     // Render 靜態站建議用 VITE_ 前綴注入
-    baseURL: (typeof import.meta !== 'undefined' && import.meta.env && import.meta.env.VITE_API_URL)
-      || process.env.VITE_API_URL
-      || 'https://your-backend-url.onrender.com/api',
+    baseURL: (typeof import.meta !== 'undefined' && import.meta.env && import.meta.env.VITE_API_BASE)
+      || process.env.VITE_API_BASE
+      || '/api',  // 預設使用相對路徑，假設前後端部署在同一域名
   }
 };
 

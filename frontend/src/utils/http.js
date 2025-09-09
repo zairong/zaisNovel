@@ -1,8 +1,9 @@
 // HTTP 工具類 - 提供統一的 API 請求方法
 import authService from '../services/authService';
+import { apiConfig } from '../services/config';
 
-// 開發預設走 Vite 代理，避免 CORS；如需直連後端請設定 VITE_API_BASE
-const API_BASE_URL = import.meta.env.VITE_API_BASE || '/api';
+// 優先使用環境變數，否則使用配置檔案的設定
+const API_BASE_URL = import.meta.env.VITE_API_BASE || apiConfig.baseURL;
 
 class HttpService {
   constructor() {
@@ -24,10 +25,23 @@ class HttpService {
 
   // 處理響應
   async handleResponse(response) {
-    const data = await response.json();
+    let data = null;
+    
+    // 檢查是否有內容需要解析
+    const contentLength = response.headers.get('content-length');
+    const contentType = response.headers.get('content-type');
+    
+    if (contentLength !== '0' && contentType && contentType.includes('application/json')) {
+      try {
+        data = await response.json();
+      } catch (jsonError) {
+        console.warn('JSON 解析失敗，響應可能為空或格式錯誤:', jsonError);
+        data = null;
+      }
+    }
     
     if (!response.ok) {
-      const error = new Error(data.message || `HTTP ${response.status}`);
+      const error = new Error(data?.message || `HTTP ${response.status}: ${response.statusText}`);
       error.response = { data, status: response.status };
       throw error;
     }
