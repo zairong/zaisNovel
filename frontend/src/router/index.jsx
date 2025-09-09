@@ -13,7 +13,7 @@ import AuthPage from '../components/Auth/AuthPage'
 import { getPageConfig } from './permissionMap'
 import { Icon } from '../components/icons'
 import UserInfo from '../components/UserInfo/UserInfo'
-import NotFound from '../components/NotFound/NotFound'
+import NotFound from '../components/NotFound'
 
 // 路由配置 - 使用統一權限管理系統
 const routes = [
