@@ -50,7 +50,9 @@ module.exports = {
       updated_at: {
         allowNull: false,
         type: DataTypes.DATE,
-        defaultValue: Sequelize.literal('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP')
+        // PostgreSQL 不支援 "ON UPDATE CURRENT_TIMESTAMP" 語法
+        // 改為僅設置 CURRENT_TIMESTAMP，並依賴應用層或觸發器更新
+        defaultValue: Sequelize.literal('CURRENT_TIMESTAMP')
       }
     });
 
