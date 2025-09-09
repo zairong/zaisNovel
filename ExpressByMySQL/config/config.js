@@ -63,8 +63,13 @@ module.exports = {
   },
   // 生產環境
   production: {
-    // 生產環境建議使用 DATABASE_URL
-    use_env_variable: 'DATABASE_URL',
+    // 若有提供 DATABASE_URL，則優先使用，否則使用個別環境變數
+    use_env_variable: process.env.DATABASE_URL ? 'DATABASE_URL' : undefined,
+    username: process.env.DB_USERNAME || '',
+    password: process.env.DB_PASSWORD || '',
+    database: process.env.DB_NAME || 'books',
+    host: process.env.DB_HOST || 'localhost',
+    port: parseInt(process.env.DB_PORT || '5432', 10),
     ...common
   }
 }

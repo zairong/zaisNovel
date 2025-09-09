@@ -68,11 +68,25 @@ class AuditService {
       })
       
       if (response.ok) {
-        const result = await response.json()
-        console.log('✅ 審計事件已發送到後端:', event.type)
-        return result
+        // 檢查響應是否包含 JSON 內容
+        const contentType = response.headers.get('content-type');
+        let result = null;
+        
+        if (contentType && contentType.includes('application/json')) {
+          try {
+            result = await response.json();
+          } catch (jsonError) {
+            console.warn('審計響應 JSON 解析失敗，但請求成功:', jsonError);
+            result = { success: true };
+          }
+        } else {
+          result = { success: true };
+        }
+        
+        console.log('✅ 審計事件已發送到後端:', event.type);
+        return result;
       } else {
-        console.error('❌ 審計事件發送失敗:', response.status)
+        console.error('❌ 審計事件發送失敗:', response.status);
       }
     } catch (error) {
       console.error('❌ 審計事件發送錯誤:', error)

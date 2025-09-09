@@ -25,9 +25,31 @@ VITE_API_BASE=https://your-backend-service.onrender.com/api
 
 ## 後端部署配置
 
+### 必要環境變數
+
+**選項 1：使用 DATABASE_URL（推薦）**
+```
+DATABASE_URL=postgresql://username:password@host:port/database
+NODE_ENV=production
+PORT=3000
+JWT_SECRET=your-super-secure-jwt-secret-key
+```
+
+**選項 2：使用個別資料庫環境變數**
+```
+DB_HOST=your-database-host
+DB_PORT=5432
+DB_NAME=your-database-name
+DB_USERNAME=your-username
+DB_PASSWORD=your-password
+NODE_ENV=production
+PORT=3000
+JWT_SECRET=your-super-secure-jwt-secret-key
+```
+
 ### 必要設定
-1. 設定資料庫連接環境變數
-2. 設定 JWT 密鑰
+1. 設定資料庫連接環境變數（見上述選項）
+2. 設定 JWT 密鑰（建議使用安全的隨機字符串）
 3. 確保 CORS 配置允許前端域名
 4. 執行資料庫遷移
 
