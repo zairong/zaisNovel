@@ -142,8 +142,19 @@ function EbookList({ userPermissions = {} }) {
       const newRatings = {};
 
       ratingResults.forEach(({ bookId, ratingData }) => {
-        if (ratingData && ratingData.success) {
-          newRatings[bookId] = ratingData.data;
+        if (ratingData && ratingData.success && ratingData.data) {
+          // 確保 averageRating 是有效數字
+          const rating = ratingData.data;
+          if (rating.averageRating !== null && rating.averageRating !== undefined && !isNaN(rating.averageRating)) {
+            newRatings[bookId] = rating;
+          } else {
+            // 提供預設評分數據
+            newRatings[bookId] = {
+              averageRating: 0,
+              totalRatings: 0,
+              hasRating: false
+            };
+          }
         }
       });
 
@@ -519,10 +530,10 @@ function EbookList({ userPermissions = {} }) {
                     <div className={classes.ebookAverageRating}>
                       <p className={classes.ebookAverageRatingText}>
                         ⭐ 平均評分：
-                        {bookRatings[book.id] ? (
+                        {bookRatings[book.id] && bookRatings[book.id].averageRating !== null ? (
                           <>
                             <span className={classes.averageRatingValue}>
-                              {bookRatings[book.id].averageRating.toFixed(1)}
+                              {Number(bookRatings[book.id].averageRating).toFixed(1)}
                             </span>
                             <span className={classes.totalRatingsCount}>
                               （{bookRatings[book.id].totalRatings} 人評分）
