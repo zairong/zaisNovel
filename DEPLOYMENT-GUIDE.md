@@ -65,10 +65,28 @@ cd frontend && npm run build
 
 ## 故障排除
 
+### CORS 跨域問題
+如果遇到 CORS 錯誤（例如：`Access to fetch ... has been blocked by CORS policy`）：
+
+1. **檢查前端環境變數**：
+   ```
+   VITE_API_BASE=https://zaisnovel.onrender.com/api
+   ```
+
+2. **驗證 CORS 設定**：
+   - 後端已配置允許 `https://zaisnovel-frontend.onrender.com`
+   - 訪問 `https://zaisnovel.onrender.com/api/cors-test` 檢查 CORS 是否正常
+
+3. **檢查域名配置**：
+   - 前端域名：`https://zaisnovel-frontend.onrender.com`
+   - 後端域名：`https://zaisnovel.onrender.com`
+   - 確保兩個服務都已部署並運行
+
 ### API 請求失敗
 - 檢查 `VITE_API_BASE` 環境變數是否正確設定
 - 確認後端服務正在運行
 - 檢查網路連接和 CORS 設定
+- 測試 API 端點：`https://zaisnovel.onrender.com/api/health`
 
 ### JSON 解析錯誤
 - 已修復：HTTP 工具類現在能正確處理空響應
@@ -79,3 +97,5 @@ cd frontend && npm run build
 - ✅ 修復 JSON 解析錯誤
 - ✅ 改善 API 配置系統
 - ✅ 增強錯誤處理機制
+- ✅ 修復 CORS 跨域問題
+- ✅ 優化生產環境部署配置

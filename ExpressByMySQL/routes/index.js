@@ -54,6 +54,16 @@ router.get('/', (req, res) => {
 router.get('/health', (req, res) => {
   res.status(200).json({ status: 'ok' })
 })
+
+// CORS 測試端點
+router.get('/cors-test', (req, res) => {
+  res.status(200).json({ 
+    status: 'CORS 正常',
+    timestamp: new Date().toISOString(),
+    origin: req.get('Origin') || 'no-origin',
+    userAgent: req.get('User-Agent') || 'no-user-agent'
+  })
+})
 // 導出路由
 module.exports = router
 
