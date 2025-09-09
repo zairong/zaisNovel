@@ -17,13 +17,15 @@ const common = {
   // 連線池設定
   pool: {
     // 最大連線數
-    max: 10,
+    max: 5,
     // 最小連線數
-    min: 0,
+    min: 1,
     // 連線超時時間
     acquire: 30000,
     // 閒置連線超時時間
-    idle: 10000
+    idle: 60000,
+    // 定期回收過久未使用的連線（毫秒）
+    evict: 10000
   },
   // 時區
   timezone: '+08:00',
@@ -37,7 +39,9 @@ const common = {
   // 資料庫選項
   dialectOptions: {
     // 編碼
-    charset: 'utf8mb4'
+    charset: 'utf8mb4',
+    // 保持連線存活，降低閒置中斷
+    keepAlive: true
   }
 }
 
