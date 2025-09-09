@@ -14,20 +14,28 @@ import { getPageConfig } from './permissionMap'
 import { Icon } from '../components/icons'
 import UserInfo from '../components/UserInfo/UserInfo'
 import NotFound from '../components/NotFound'
+import Demo1 from '../components/Demo1/index'
 
 // 路由配置 - 使用統一權限管理系統
 const routes = [
   {
     path: '/',
-    element: <Home />,
+    element: <Demo1 />,
     title: '首頁',
     description: '書籍管理系統首頁',
-    meta: {
-      ...getPageConfig('home'), // 自動獲取認證要求和權限
-      icon: 'home',
-      iconComponent: <Icon name="home" size={20} />
-    }
+
   },
+  // {
+  //   path: '/',
+  //   element: <Home />,
+  //   title: '首頁',
+  //   description: '書籍管理系統首頁',
+  //   meta: {
+  //     ...getPageConfig('home'), // 自動獲取認證要求和權限
+  //     icon: 'home',
+  //     iconComponent: <Icon name="home" size={20} />
+  //   }
+  // },
   {
     path: '/auth',
     element: <AuthPage />,
@@ -153,7 +161,8 @@ const routes = [
 function AppRoutes({ userPermissions = {} }) {
   return (
     <Routes>
-      <Route path="/" element={<Home userPermissions={userPermissions} />} />
+      <Route path="/" element={<Demo1  />} />
+      {/* <Route path="/" element={<Home userPermissions={userPermissions} />} /> */}
       <Route path="/auth" element={<AuthPage userPermissions={userPermissions} />} />
       <Route path="/books" element={<Books userPermissions={userPermissions} />} />
       <Route path="/my-library" element={<UserLibrary userPermissions={userPermissions} />} />
