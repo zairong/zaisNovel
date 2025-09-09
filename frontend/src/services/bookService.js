@@ -1,7 +1,8 @@
 // 書籍服務 - 處理與後端 API 的交互
 import authService from './authService'
 // 開發預設走 Vite 代理，避免 CORS；如需直連後端請設定 VITE_API_BASE
-const API_BASE_URL = import.meta.env.VITE_API_BASE || '/api'
+import { apiConfig } from './config';
+const API_BASE_URL = import.meta.env.VITE_API_BASE || apiConfig.baseURL;
 
 class BookService {
   // 取得所有書籍

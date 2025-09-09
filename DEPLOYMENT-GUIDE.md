@@ -7,10 +7,10 @@
 在部署平台（如 Render）中，需要設定以下環境變數：
 
 ```
-VITE_API_BASE=https://your-backend-service.onrender.com/api
+VITE_API_BASE=https://zaisnovel.onrender.com/api
 ```
 
-**重要**：將 `your-backend-service.onrender.com` 替換為實際的後端服務 URL。
+**注意**：這個 URL 對應到已部署的後端服務。如果需要自定義，請設定相應的環境變數。
 
 ### 部署選項
 

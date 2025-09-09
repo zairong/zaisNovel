@@ -58,7 +58,9 @@ class AuditService {
   // 發送到後端
   async sendToBackend(event) {
     try {
-      const API_BASE_URL = import.meta.env.VITE_API_BASE || '/api';
+      // 使用統一的 API 配置
+      const { apiConfig } = await import('./config');
+      const API_BASE_URL = import.meta.env.VITE_API_BASE || apiConfig.baseURL;
       const response = await fetch(`${API_BASE_URL}/audit/log`, {
         method: 'POST',
         headers: { 

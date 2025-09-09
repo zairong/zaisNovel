@@ -9,7 +9,7 @@ const config = {
     // Render 靜態站建議用 VITE_ 前綴注入
     baseURL: (typeof import.meta !== 'undefined' && import.meta.env && import.meta.env.VITE_API_BASE)
       || process.env.VITE_API_BASE
-      || '/api',  // 預設使用相對路徑，假設前後端部署在同一域名
+      || 'https://zaisnovel.onrender.com/api',  // 後端服務的正確 URL
   }
 };
 
