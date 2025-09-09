@@ -8,10 +8,19 @@
     "build": "cd frontend && npm install && npm run build",
     "heroku-postbuild": "cd ExpressByMySQL && npm install && cd ../frontend && npm install"
   },
-  "keywords": ["nodejs", "express", "postgresql", "books"],
+  "keywords": [
+    "nodejs",
+    "express",
+    "postgresql",
+    "books"
+  ],
   "author": "",
   "license": "ISC",
   "engines": {
     "node": "22.x"
+  },
+  "devDependencies": {
+    "sass": "^1.92.1",
+    "sass-loader": "^16.0.5"
   }
 }
