@@ -1,5 +1,8 @@
 // 使用環境變數作為資料庫設定，避免在版本控制中留下明碼
-require('dotenv').config()
+// 只在沒有關鍵環境變數時載入 .env 文件
+if (!process.env.DATABASE_URL && !process.env.DB_HOST) {
+  require('dotenv').config()
+}
 
 /**
  * 推薦在開發與測試環境使用個別的環境變數（DB_HOST/DB_PORT/DB_NAME/DB_USERNAME/DB_PASSWORD）

@@ -1,4 +1,7 @@
-require('dotenv').config()
+// 只在沒有環境變數時載入 .env 文件
+if (!process.env.DATABASE_URL && !process.env.DB_HOST) {
+  require('dotenv').config()
+}
 const express = require('express')
 const methodOverride = require('method-override')
 const path = require('path')
@@ -62,6 +65,14 @@ function listenOnAvailablePort(app, preferredPort) {
 
 async function start() {
   try {
+    console.log('🔧 環境變數狀態檢查:')
+    console.log('DATABASE_URL:', process.env.DATABASE_URL ? '已設定' : '未設定')
+    console.log('DB_HOST:', process.env.DB_HOST || '未設定')
+    console.log('DB_PORT:', process.env.DB_PORT || '未設定')
+    console.log('DB_NAME:', process.env.DB_NAME || '未設定')
+    console.log('DB_USERNAME:', process.env.DB_USERNAME || '未設定')
+    console.log('NODE_ENV:', process.env.NODE_ENV || '未設定')
+    
     console.log('🔌 測試資料庫連線...')
     await sequelize.authenticate()
     console.log('✅ 資料庫連線成功')

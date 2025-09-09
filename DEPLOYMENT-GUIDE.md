@@ -53,6 +53,11 @@ JWT_SECRET=your-super-secure-jwt-secret-key
 3. 確保 CORS 配置允許前端域名
 4. 執行資料庫遷移
 
+### 重要注意事項
+- 後端配置為使用 **PostgreSQL**，請確保資料庫類型正確
+- 部署平台的環境變數會覆蓋 `.env` 文件設定
+- 如果使用 Render 平台，會自動提供 PostgreSQL 資料庫
+
 ### 建構指令
 ```bash
 cd frontend && npm run build
