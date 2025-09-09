@@ -1,6 +1,6 @@
 import React from 'react'
 import { Routes, Route } from 'react-router-dom'
-import Home from '../components/Home/Home'
+// import Home from '../components/Home/Home'
 import Books from '../components/Books/Books'
 import About from '../components/About/About'
 import EbookList from '../components/Ebook/EbookList'
@@ -173,7 +173,7 @@ function AppRoutes({ userPermissions = {} }) {
       <Route path="/ebooks/:id/edit" element={<EbookEditor userPermissions={userPermissions} />} />
       <Route path="/ebooks/upload" element={<EbookUpload userPermissions={userPermissions} />} />
       <Route path="/about" element={<About userPermissions={userPermissions} />} />
-      <Route path="*" element={<NotFound />} />
+      {/* <Route path="*" element={<NotFound />} /> */}
     </Routes>
   )
 }
