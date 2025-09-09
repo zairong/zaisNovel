@@ -24,6 +24,6 @@
     "sass-loader": "^16.0.5"
   },
   "dependencies": {
-    "vite": "^7.1.5"
+    "vite": "^4.2.0"
   }
 }
