@@ -30,7 +30,7 @@ router.get('/', (req, res) => {
   // 返回 API 端點
   res.json({
     // 訊息
-    message: '歡迎使用 Express MySQL API',
+    message: '歡迎使用 Express PostgreSQL API',
     // 版本
     version: '1.0.0',
     // 端點
@@ -49,6 +49,10 @@ router.get('/', (req, res) => {
       comments: '/api/comments'
     }
   })
+})
+// 健康檢查端點
+router.get('/health', (req, res) => {
+  res.status(200).json({ status: 'ok' })
 })
 // 導出路由
 module.exports = router

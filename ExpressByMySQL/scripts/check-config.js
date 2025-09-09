@@ -88,19 +88,20 @@ if (fs.existsSync(nodeModulesPath)) {
 
 // 顯示配置建議
 console.log('\n💡 配置建議:');
-console.log('1. 創建 .env 檔案並設定以下環境變數:');
+console.log('1. 建議優先在生產環境使用 DATABASE_URL（Render 會自動提供）');
+console.log('   或在本地開發使用以下環境變數:');
 console.log('   DB_HOST=localhost');
-console.log('   DB_PORT=3306');
+console.log('   DB_PORT=5432');
 console.log('   DB_NAME=your_database_name');
 console.log('   DB_USERNAME=your_username');
 console.log('   DB_PASSWORD=your_password');
 console.log('');
-console.log('2. 確保 MySQL 服務正在運行');
+console.log('2. 確保 PostgreSQL 服務正在運行');
 console.log('3. 確保資料庫用戶有適當的權限');
 console.log('4. 檢查防火牆設定（如果使用遠端資料庫）');
 console.log('');
 console.log('5. 測試資料庫連接:');
-console.log('   mysql -u username -p -h hostname -P port database_name');
+console.log('   psql -U username -h hostname -p port database_name');
 
 // 檢查是否有 .env.example 檔案
 const envExamplePath = path.join(__dirname, '..', '.env.example');

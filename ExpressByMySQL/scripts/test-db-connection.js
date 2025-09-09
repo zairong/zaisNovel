@@ -1,4 +1,4 @@
-const mysql = require('mysql2/promise');
+const { Client } = require('pg');
 
 console.log('🔌 測試資料庫連接...\n');
 
@@ -40,25 +40,26 @@ async function testConnection() {
     console.log('\n🚀 嘗試連接資料庫...');
     
     // 創建連接
-    connection = await mysql.createConnection(config);
+    connection = new Client(config);
+    await connection.connect();
     console.log('✅ 資料庫連接成功！');
     
     // 測試查詢
     console.log('\n📊 測試基本查詢...');
-    const [rows] = await connection.execute('SELECT 1 as test, NOW() as `current_time`');
+    const [rows] = await connection.query('SELECT 1 as test, NOW() as `current_time`');
     console.log('✅ 查詢測試成功:', rows[0]);
     
     // 檢查資料庫版本
-    const [versionRows] = await connection.execute('SELECT VERSION() as version');
+    const [versionRows] = await connection.query('SELECT VERSION() as version');
     console.log('✅ 資料庫版本:', versionRows[0].version);
     
     // 檢查資料庫編碼
-    const [charsetRows] = await connection.execute('SHOW VARIABLES LIKE "character_set_database"');
+    const [charsetRows] = await connection.query('SHOW VARIABLES LIKE "character_set_database"');
     console.log('✅ 資料庫編碼:', charsetRows[0].Value);
     
     // 檢查資料表
     console.log('\n📋 檢查資料表...');
-    const [tableRows] = await connection.execute('SHOW TABLES');
+    const [tableRows] = await connection.query('SHOW TABLES');
     if (tableRows.length > 0) {
       console.log(`✅ 發現 ${tableRows.length} 個資料表:`);
       tableRows.forEach((row, index) => {
@@ -80,8 +81,8 @@ async function testConnection() {
     console.log('\n💡 常見問題解決方案:');
     
     if (error.code === 'ECONNREFUSED') {
-      console.log('   1. 檢查 MySQL 服務是否正在運行');
-      console.log('   2. 檢查埠號是否正確 (預設: 3306)');
+      console.log('   1. 檢查 PostgreSQL 服務是否正在運行');
+      console.log('   2. 檢查埠號是否正確 (預設: 5432)');
       console.log('   3. 檢查防火牆設定');
     } else if (error.code === 'ER_ACCESS_DENIED_ERROR') {
       console.log('   1. 檢查用戶名和密碼是否正確');
@@ -99,10 +100,10 @@ async function testConnection() {
     
     console.log('\n🔧 故障排除步驟:');
     console.log('   1. 確認 .env 檔案存在且配置正確');
-    console.log('   2. 使用 MySQL 命令列工具測試連接:');
-    console.log(`      mysql -u ${config.user} -p -h ${config.host} -P ${config.port} ${config.database}`);
-    console.log('   3. 檢查 MySQL 服務狀態');
-    console.log('   4. 檢查 MySQL 錯誤日誌');
+    console.log('   2. 使用 PostgreSQL 命令列工具測試連接:');
+    console.log(`      psql -U ${config.user} -h ${config.host} -p ${config.port} ${config.database}`);
+    console.log('   3. 檢查 PostgreSQL 服務狀態');
+    console.log('   4. 檢查 PostgreSQL 錯誤日誌');
     
   } finally {
     if (connection) {

@@ -3,7 +3,7 @@ require('dotenv').config()
 
 /**
  * 推薦在開發與測試環境使用個別的環境變數（DB_HOST/DB_PORT/DB_NAME/DB_USERNAME/DB_PASSWORD）
- * 在生產環境可使用 DATABASE_URL 一次性指定（例如：mysql://user:pass@host:3306/dbname）
+ * 在生產環境可使用 DATABASE_URL 一次性指定（例如：postgresql://user:pass@host:5432/dbname）
  */
 
 const common = {
@@ -24,7 +24,7 @@ const common = {
   },
   // 時區
   timezone: '+08:00',
-  // 在資料表層級設定編碼與排序規則（避免將 collate 傳入連線造成 mysql2 警告）
+  // 在資料表層級設定編碼與排序規則
   define: {
     // 編碼
     charset: 'utf8mb4',
@@ -41,13 +41,13 @@ const common = {
 module.exports = {
   // 開發環境
   development: {
-    // 若有提供 DATABASE_URL，則優先使用（例如：mysql://user:pass@host:3306/dbname）
+    // 若有提供 DATABASE_URL，則優先使用（例如：postgresql://user:pass@host:5432/dbname）
     use_env_variable: process.env.DATABASE_URL ? 'DATABASE_URL' : undefined,
     username: process.env.DB_USERNAME || '',
     password: process.env.DB_PASSWORD || '',
     database: process.env.DB_NAME || 'books',
     host: process.env.DB_HOST || '127.0.0.1',
-    port: parseInt(process.env.DB_PORT || '3306', 10),
+    port: parseInt(process.env.DB_PORT || '5432', 10),
     ...common
   },
   // 測試環境
@@ -58,7 +58,7 @@ module.exports = {
     password: process.env.DB_PASSWORD || '',
     database: process.env.DB_NAME || 'books',
     host: process.env.DB_HOST || '127.0.0.1',
-    port: parseInt(process.env.DB_PORT || '3306', 10),
+    port: parseInt(process.env.DB_PORT || '5432', 10),
     ...common
   },
   // 生產環境

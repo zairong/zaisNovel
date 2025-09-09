@@ -5,7 +5,7 @@ const { User, Book, BookView, BookDownload } = require('../models');
 const sequelize = new Sequelize('books', 'root', '', {
   host: '127.0.0.1',
   port: 3306,
-  dialect: 'mysql',
+  dialect: 'postgres',
   logging: false
 });
 

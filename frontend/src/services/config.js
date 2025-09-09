@@ -6,7 +6,10 @@ const config = {
   },
   // 生產環境
   production: {
-    baseURL: process.env.REACT_APP_API_URL || 'https://your-backend-url.herokuapp.com/api',
+    // Render 靜態站建議用 VITE_ 前綴注入
+    baseURL: (typeof import.meta !== 'undefined' && import.meta.env && import.meta.env.VITE_API_URL)
+      || process.env.VITE_API_URL
+      || 'https://your-backend-url.onrender.com/api',
   }
 };
 
