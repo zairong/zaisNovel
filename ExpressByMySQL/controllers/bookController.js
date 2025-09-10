@@ -225,9 +225,21 @@ async function uploadEbook(req, res) {
   if (!book) return res.status(404).json({ success: false, message: '找不到該書籍' })
   const allowed = await canManage(req, book)
   if (!allowed) return res.status(403).json({ success: false, message: '權限不足，無法上傳此書籍的電子書' })
-  if (book.ebook_file && fs.existsSync(book.ebook_file)) fs.unlinkSync(book.ebook_file)
+  if (book.ebook_file && fs.existsSync(book.ebook_file)) { try { fs.unlinkSync(book.ebook_file) } catch (_) {} }
   const originalName = fixFilename(req.file.originalname)
-  await book.update({ ebook_file: req.file.path, ebook_filename: originalName, ebook_size: req.file.size, has_ebook: true })
+  const payload = { ebook_file: req.file.path, ebook_filename: originalName, ebook_size: req.file.size, has_ebook: true }
+  // 若有資料庫欄位，將內容寫入 DB（方案 B）
+  try {
+    const qi = sequelize.getQueryInterface()
+    let tableInfo = null
+    try { tableInfo = await qi.describeTable('books') } catch (_) { tableInfo = null }
+    if (tableInfo && tableInfo.ebook_content) {
+      const fileContent = fs.readFileSync(req.file.path, 'utf8')
+      payload.ebook_content = fileContent
+      payload.ebook_mime = 'text/markdown'
+    }
+  } catch (_) {}
+  await book.update(payload)
   return res.json({ success: true, data: { filename: originalName, size: req.file.size, path: req.file.path }, message: '電子書上傳成功' })
 }
 
@@ -308,8 +320,15 @@ async function downloadEbook(req, res) {
     return res.status(500).json({ success: false, message: '取得書籍時發生錯誤', error: e.message })
   }
   if (!book) return res.status(404).json({ success: false, message: '找不到該書籍' })
-  if (!book.has_ebook || !book.ebook_file) return res.status(404).json({ success: false, message: '該書籍沒有電子書檔案' })
-  if (!fs.existsSync(book.ebook_file)) return res.status(404).json({ success: false, message: '電子書檔案不存在' })
+  if (!book.has_ebook) return res.status(404).json({ success: false, message: '該書籍沒有電子書檔案' })
+  // 若原紀錄的路徑不存在，嘗試回退至環境變數目錄尋找
+  let ebookPath = book.ebook_file
+  if (!fs.existsSync(ebookPath)) {
+    const fallbackDir = process.env.UPLOAD_DIR || path.join(__dirname, '..', 'uploads', 'ebooks')
+    const candidate = path.join(fallbackDir, path.basename(ebookPath))
+    if (fs.existsSync(candidate)) ebookPath = candidate
+  }
+  if (!fs.existsSync(ebookPath)) return res.status(404).json({ success: false, message: '電子書檔案不存在' })
   // 去重下載計數：每日唯一
   try {
     const qi = sequelize.getQueryInterface()
@@ -368,6 +387,17 @@ async function downloadEbook(req, res) {
       res.set('X-View-Count', String(book.view_count || 0))
     }
   } catch (_) {}
+  // 若資料庫已存有內容，直接傳回文字內容
+  if (typeof book.ebook_content !== 'undefined' && book.ebook_content) {
+    let downloadName = book.ebook_filename || `${book.title || 'ebook'}.md`
+    try { downloadName = fixFilename(downloadName) } catch (_) {}
+    try {
+      const encoded = encodeURIComponent(downloadName)
+      res.setHeader('Content-Type', `${book.ebook_mime || 'text/markdown'}; charset=utf-8`)
+      res.setHeader('Content-Disposition', `attachment; filename="${downloadName}"; filename*=UTF-8''${encoded}`)
+    } catch (_) {}
+    return res.status(200).send(book.ebook_content)
+  }
   // 優先使用原始檔名（修正編碼），其次以書名作為檔名，最後使用實體檔案名
   let downloadName = book.ebook_filename || `${book.title || 'ebook'}.md`
   try { downloadName = fixFilename(downloadName) } catch (_) {}
@@ -377,7 +407,7 @@ async function downloadEbook(req, res) {
     res.setHeader('Content-Type', 'text/markdown; charset=utf-8')
     res.setHeader('Content-Disposition', `attachment; filename="${downloadName}"; filename*=UTF-8''${encoded}`)
   } catch (_) {}
-  return res.download(book.ebook_file, downloadName)
+  return res.download(ebookPath, downloadName)
 }
 // 閱讀電子書
 async function readEbook(req, res) {
@@ -396,8 +426,7 @@ async function readEbook(req, res) {
     return res.status(500).json({ success: false, message: '取得書籍時發生錯誤', error: e.message })
   }
   if (!book) return res.status(404).json({ success: false, message: '找不到該書籍' })
-  if (!book.has_ebook || !book.ebook_file) return res.status(404).json({ success: false, message: '該書籍沒有電子書檔案' })
-  if (!fs.existsSync(book.ebook_file)) return res.status(404).json({ success: false, message: '電子書檔案不存在' })
+  if (!book.has_ebook) return res.status(404).json({ success: false, message: '該書籍沒有電子書檔案' })
   // 無論是否登入，只要點擊閱讀即計數（資源存在時），採每日唯一去重
   try {
     const qi = sequelize.getQueryInterface()
@@ -447,7 +476,20 @@ async function readEbook(req, res) {
       await book.increment('view_count').catch(() => {})
     }
   } catch (_) {}
-  const content = fs.readFileSync(book.ebook_file, 'utf8')
+  // 若資料庫已有內容，直接回傳
+  if (typeof book.ebook_content !== 'undefined' && book.ebook_content) {
+    try { await book.reload() } catch (_) {}
+    return res.json({ success: true, data: { title: book.title, author: book.author_name, filename: book.ebook_filename, size: book.ebook_size, view_count: book.view_count, content: book.ebook_content }, message: '成功取得電子書內容' })
+  }
+  // 檔案回退
+  let ebookPathR = book.ebook_file
+  if (!fs.existsSync(ebookPathR)) {
+    const fallbackDir = process.env.UPLOAD_DIR || path.join(__dirname, '..', 'uploads', 'ebooks')
+    const candidate = path.join(fallbackDir, path.basename(ebookPathR))
+    if (fs.existsSync(candidate)) ebookPathR = candidate
+  }
+  if (!fs.existsSync(ebookPathR)) return res.status(404).json({ success: false, message: '電子書檔案不存在' })
+  const content = fs.readFileSync(ebookPathR, 'utf8')
   // 取最新觀看數
   try { await book.reload() } catch (_) {}
   return res.json({ success: true, data: { title: book.title, author: book.author_name, filename: book.ebook_filename, size: book.ebook_size, view_count: book.view_count, content }, message: '成功取得電子書內容' })
@@ -461,6 +503,18 @@ async function updateEbookContent(req, res) {
   if (!book) return res.status(404).json({ success: false, message: '找不到該書籍' })
   const allowed = await canManage(req, book)
   if (!allowed) return res.status(403).json({ success: false, message: '權限不足，無法更新此書籍的電子書內容' })
+  // 優先更新資料庫欄位（方案 B）
+  try {
+    const qi = sequelize.getQueryInterface()
+    let info = null
+    try { info = await qi.describeTable('books') } catch (_) { info = null }
+    if (info && info.ebook_content) {
+      const size = Buffer.byteLength(content, 'utf8')
+      await book.update({ ebook_content: content, ebook_mime: 'text/markdown', ebook_size: size, has_ebook: true })
+      return res.json({ success: true, data: { title: book.title, author: book.author_name, filename: book.ebook_filename, size, content }, message: '電子書內容更新成功' })
+    }
+  } catch (_) {}
+  // 檔案回退
   if (!book.has_ebook || !book.ebook_file) return res.status(404).json({ success: false, message: '該書籍沒有電子書檔案' })
   if (!fs.existsSync(book.ebook_file)) return res.status(404).json({ success: false, message: '電子書檔案不存在' })
   fs.writeFileSync(book.ebook_file, content, 'utf8')
@@ -475,10 +529,19 @@ async function deleteEbook(req, res) {
   if (!book) return res.status(404).json({ success: false, message: '找不到該書籍' })
   const allowed = await canManage(req, book)
   if (!allowed) return res.status(403).json({ success: false, message: '權限不足，無法刪除此書籍的電子書' })
-  if (!book.has_ebook || !book.ebook_file) return res.status(404).json({ success: false, message: '該書籍沒有電子書檔案' })
+  if (!book.has_ebook) return res.status(404).json({ success: false, message: '該書籍沒有電子書檔案' })
   if (fs.existsSync(book.ebook_file)) {
     try { fs.unlinkSync(book.ebook_file) } catch (_) {}
   }
+  // 清除資料庫欄位（若存在）
+  try {
+    const qi = sequelize.getQueryInterface()
+    let info = null
+    try { info = await qi.describeTable('books') } catch (_) { info = null }
+    if (info && info.ebook_content) {
+      await book.update({ ebook_content: null, ebook_mime: null })
+    }
+  } catch (_) {}
   await book.update({ ebook_file: null, ebook_filename: null, ebook_size: null, has_ebook: false })
   return res.json({ success: true, message: '電子書檔案刪除成功' })
 }

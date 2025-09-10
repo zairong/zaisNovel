@@ -84,6 +84,18 @@ module.exports = (sequelize, DataTypes) => {
       defaultValue: false,
       comment: '是否有電子書'
     },
+    // 方案B：資料庫儲存電子書
+    ebook_content: {
+      type: DataTypes.TEXT,
+      allowNull: true,
+      comment: '電子書內容（Markdown）'
+    },
+    ebook_mime: {
+      type: DataTypes.STRING,
+      allowNull: true,
+      defaultValue: 'text/markdown',
+      comment: '電子書內容 MIME 類型'
+    },
     // 封面相關欄位
     cover_image: {
       type: DataTypes.TEXT('long'),

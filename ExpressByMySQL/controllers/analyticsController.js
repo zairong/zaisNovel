@@ -296,7 +296,7 @@ async function myBooks(req, res) {
     const [rows] = await sequelize.query(
       `SELECT id, title
        FROM books
-       WHERE author_id = :uid AND has_ebook = 1
+       WHERE author_id = :uid AND has_ebook = TRUE
        ORDER BY created_at DESC` ,
       { replacements: { uid: req.user.id } }
     )

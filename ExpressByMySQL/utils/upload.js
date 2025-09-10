@@ -5,7 +5,8 @@ const { fixFilename } = require('./bookUtils')
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    const uploadDir = path.join(__dirname, '..', 'uploads', 'ebooks')
+    const baseDir = process.env.UPLOAD_DIR || path.join(__dirname, '..', 'uploads', 'ebooks')
+    const uploadDir = baseDir
     if (!fs.existsSync(uploadDir)) {
       fs.mkdirSync(uploadDir, { recursive: true })
     }
@@ -34,7 +35,8 @@ const upload = multer({
 // 封面圖片上傳配置
 const coverStorage = multer.diskStorage({
   destination: function (req, file, cb) {
-    const uploadDir = path.join(__dirname, '..', 'uploads', 'covers')
+    const baseDir = process.env.COVER_DIR || path.join(__dirname, '..', 'uploads', 'covers')
+    const uploadDir = baseDir
     if (!fs.existsSync(uploadDir)) {
       fs.mkdirSync(uploadDir, { recursive: true })
     }
