@@ -333,37 +333,48 @@ async function myBooks(req, res) {
 // 獲取年齡分布統計
 async function getAgeDistribution(req, res) {
   try {
-    const { BookView, User, sequelize } = require('../models')
-    
-    // 統計觀看者的年齡分布，包括未登入者
-    // 使用子查詢來避免 GROUP BY 問題
-    const [ageDistribution] = await sequelize.query(`
-      SELECT 
-        age_range,
-        COUNT(*) as count
-      FROM (
+    const { sequelize } = require('../models')
+    const hasUserId = await tableHasColumn('book_views', 'user_id')
+
+    let ageDistribution = []
+    if (hasUserId) {
+      // 有 user_id 欄位：可連接 users 取得年齡層
+      const [rows] = await sequelize.query(`
         SELECT 
-          CASE 
-            WHEN bv.user_id IS NOT NULL THEN 
-              COALESCE(u.age_range, '未知')
-            ELSE '未知'
-          END as age_range
-        FROM book_views bv
-        LEFT JOIN users u ON bv.user_id = u.id
-      ) as age_data
-      GROUP BY age_range
-      ORDER BY 
-        CASE age_range 
-          WHEN '未知' THEN 1 
-          WHEN '10~20' THEN 2 
-          WHEN '20~30' THEN 3 
-          WHEN '30~40' THEN 4 
-          WHEN '40~50' THEN 5 
-          WHEN '50~60' THEN 6 
-          WHEN '60以上' THEN 7 
-          ELSE 8 
-        END
-    `)
+          age_range,
+          COUNT(*) as count
+        FROM (
+          SELECT 
+            CASE 
+              WHEN bv.user_id IS NOT NULL THEN 
+                COALESCE(u.age_range, '未知')
+              ELSE '未知'
+            END as age_range
+          FROM book_views bv
+          LEFT JOIN users u ON bv.user_id = u.id
+        ) as age_data
+        GROUP BY age_range
+        ORDER BY 
+          CASE age_range 
+            WHEN '未知' THEN 1 
+            WHEN '10~20' THEN 2 
+            WHEN '20~30' THEN 3 
+            WHEN '30~40' THEN 4 
+            WHEN '40~50' THEN 5 
+            WHEN '50~60' THEN 6 
+            WHEN '60以上' THEN 7 
+            ELSE 8 
+          END
+      `)
+      ageDistribution = rows
+    } else {
+      // 沒有 user_id 欄位：一律視為未知
+      const [rows] = await sequelize.query(`
+        SELECT '未知' AS age_range, COUNT(*) AS count
+        FROM book_views
+      `)
+      ageDistribution = rows
+    }
 
     return res.json({
       success: true,
