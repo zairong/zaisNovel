@@ -334,6 +334,17 @@ async function myBooks(req, res) {
 async function getAgeDistribution(req, res) {
   try {
     const { sequelize } = require('../models')
+    // 若統計表不存在，直接回傳預設（全未知）避免 500
+    const hasViewTable = await (async () => {
+      try {
+        await sequelize.getQueryInterface().describeTable('book_views')
+        return true
+      } catch (_) { return false }
+    })()
+    if (!hasViewTable) {
+      return res.json({ success: true, data: [{ age_range: '未知', count: 0 }] })
+    }
+
     const hasUserId = await tableHasColumn('book_views', 'user_id')
 
     let ageDistribution = []
@@ -385,10 +396,7 @@ async function getAgeDistribution(req, res) {
     })
   } catch (error) {
     console.error('獲取年齡分布失敗:', error)
-    return res.status(500).json({
-      success: false,
-      message: '獲取年齡分布失敗'
-    })
+    return res.status(500).json({ success: false, message: '獲取年齡分布失敗', error: error.message })
   }
 }
 
