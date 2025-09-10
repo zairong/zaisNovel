@@ -5,6 +5,9 @@ import react from '@vitejs/plugin-react'
 export default defineConfig({
   plugins: [react()],
   publicDir: 'public', // 確保 public 目錄中的文件被複製到 dist
+  define: {
+    global: 'globalThis',
+  },
   server: {
     port: 5173,
     host: '127.0.0.1',  // 強制使用 IPv4
