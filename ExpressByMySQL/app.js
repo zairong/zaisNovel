@@ -29,9 +29,9 @@ const corsOptions = {
 
 app.use(cors(corsOptions))
 
-// 中間件設定
-app.use(express.urlencoded({ extended: true }))
-app.use(express.json())
+// 中間件設定（提高 body 大小限制，避免描述或少量 Base64 過大導致 413）
+app.use(express.urlencoded({ extended: true, limit: '2mb' }))
+app.use(express.json({ limit: '2mb' }))
 app.use(methodOverride('_method'))
 
 // 靜態檔案

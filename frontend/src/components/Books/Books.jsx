@@ -133,9 +133,14 @@ function Books({ userPermissions = {} }) {
     e.preventDefault();
 
     try {
+      // 僅提交必要欄位，避免附帶大型欄位（如 cover_image）
       const bookData = {
-        ...editingBook,
-        price: editingBook.price ? parseFloat(editingBook.price) : null
+        title: editingBook.title,
+        author: editingBook.author,
+        isbn: editingBook.isbn || undefined,
+        price: editingBook.price ? parseFloat(editingBook.price) : null,
+        description: editingBook.description || undefined,
+        category: editingBook.category || undefined
       };
 
       await bookService.updateBook(editingBook.id, bookData);

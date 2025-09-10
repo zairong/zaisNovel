@@ -110,10 +110,20 @@ class BookService {
   // 更新書籍
   async updateBook(id, bookData) {
     try {
+      // 僅提交允許更新的欄位，避免將大型欄位（如 cover_image）塞進一般更新 API
+      const { title, author, isbn, price, description, category } = bookData || {}
+      const safePayload = {}
+      if (typeof title !== 'undefined') safePayload.title = title
+      if (typeof author !== 'undefined') safePayload.author = author
+      if (typeof isbn !== 'undefined') safePayload.isbn = isbn
+      if (typeof price !== 'undefined') safePayload.price = price
+      if (typeof description !== 'undefined') safePayload.description = description
+      if (typeof category !== 'undefined') safePayload.category = category
+
       const response = await fetch(`${API_BASE_URL}/books/${id}`, {
         method: 'PUT',
         headers: authService.getAuthHeaders(),
-        body: JSON.stringify(bookData)
+        body: JSON.stringify(safePayload)
       })
       
       const data = await response.json()
