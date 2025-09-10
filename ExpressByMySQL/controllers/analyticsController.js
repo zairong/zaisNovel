@@ -397,7 +397,8 @@ async function getAgeDistribution(req, res) {
     })
   } catch (error) {
     console.error('獲取年齡分布失敗:', error)
-    return res.status(500).json({ success: false, message: '獲取年齡分布失敗', error: error.message })
+    // 降級回傳空資料，避免前端報錯
+    return res.json({ success: true, data: [{ age_range: '未知', count: 0 }], error: error.message })
   }
 }
 
