@@ -52,11 +52,26 @@ app.use('*', (req, res) => {
 
 // 錯誤處理中間件
 app.use((err, req, res, next) => {
-  console.error(err.stack)
-  res.status(500).json({
+  // 更完整的錯誤分類與回應
+  console.error('❌ Error caught by handler:', err && (err.stack || err))
+  let status = err && (err.status || err.statusCode) || 500
+  let message = '伺服器錯誤'
+
+  // 請求內容過大（body-parser）
+  if (err && err.type === 'entity.too.large') {
+    status = 413
+    message = '請求內容過大'
+  }
+  // Sequelize 常見錯誤
+  else if (err && (err.name === 'SequelizeValidationError' || err.name === 'SequelizeUniqueConstraintError' || err.name === 'SequelizeDatabaseError')) {
+    status = 400
+    message = err.message
+  }
+
+  res.status(status).json({
     success: false,
-    message: '伺服器錯誤',
-    error: err.message
+    message,
+    error: err && err.message
   })
 })
 

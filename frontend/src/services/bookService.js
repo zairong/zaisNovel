@@ -131,7 +131,8 @@ class BookService {
       if (data.success) {
         return data
       } else {
-        throw new Error(data.message || '更新書籍失敗')
+        const detail = (data && (data.error || data.message)) || `HTTP ${response.status}`
+        throw new Error(detail || '更新書籍失敗')
       }
     } catch (error) {
       console.error('更新書籍錯誤:', error)

@@ -182,7 +182,7 @@ async function updateBook(req, res) {
     return res.json({ success: true, data: serializeBook(book), message: '書籍更新成功' })
   } catch (err) {
     // 回傳更友善的驗證錯誤訊息
-    if (err && (err.name === 'SequelizeValidationError' || err.name === 'SequelizeUniqueConstraintError')) {
+    if (err && (err.name === 'SequelizeValidationError' || err.name === 'SequelizeUniqueConstraintError' || err.name === 'SequelizeDatabaseError')) {
       return res.status(400).json({ success: false, message: err.message })
     }
     return res.status(500).json({ success: false, message: '伺服器錯誤', error: err.message })
