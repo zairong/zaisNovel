@@ -121,6 +121,7 @@ async function viewsHistory(req, res) {
     const data = buckets.data
 
     const hasUserId = await tableHasColumn('book_views', 'user_id')
+    const hasUserAgeRange = await tableHasColumn('users', 'age_range')
     const isAuthor = req.user && req.user.role === 'author'
     const whereUser = hasUserId ? 'v.user_id = :uid' : 'v.viewer_key = :vkey'
     const params = hasUserId ? { uid: req.user.id } : { vkey: `usr:${req.user.id}` }
@@ -348,7 +349,7 @@ async function getAgeDistribution(req, res) {
     const hasUserId = await tableHasColumn('book_views', 'user_id')
 
     let ageDistribution = []
-    if (hasUserId) {
+    if (hasUserId && hasUserAgeRange) {
       // 有 user_id 欄位：可連接 users 取得年齡層
       const [rows] = await sequelize.query(`
         SELECT 
@@ -379,7 +380,7 @@ async function getAgeDistribution(req, res) {
       `)
       ageDistribution = rows
     } else {
-      // 沒有 user_id 欄位：一律視為未知
+      // 沒有 user_id 欄位或 users 無 age_range 欄位：一律視為未知
       const [rows] = await sequelize.query(`
         SELECT '未知' AS age_range, COUNT(*) AS count
         FROM book_views
