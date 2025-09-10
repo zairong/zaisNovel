@@ -390,15 +390,10 @@ export default function UserInfo() {
     return myBooks.length > 0;
   }, [myBooks]);
 
-  // 獲取可用的年份
+  // 獲取可用的年份（改用 service 基底 URL，避免 404）
   const fetchAvailableYears = async () => {
     try {
-      const response = await fetch('/api/analytics/available-years', {
-        headers: {
-          'Authorization': `Bearer ${localStorage.getItem('token')}`
-        }
-      });
-      const data = await response.json();
+      const data = await analyticsService.getAvailableYears();
       if (data.success && data.data.length > 0) {
         setAvailableYears(data.data);
         // 如果當前選中的年份不在可用年份中，則選擇第一個可用年份
@@ -429,12 +424,7 @@ export default function UserInfo() {
 
   const fetchAgeDistribution = async () => {
     try {
-      const response = await fetch('/api/analytics/age-distribution', {
-        headers: {
-          'Authorization': `Bearer ${localStorage.getItem('token')}`
-        }
-      });
-      const data = await response.json();
+      const data = await analyticsService.getAgeDistribution();
       if (data.success) {
         setAgeDistribution(data.data);
       }

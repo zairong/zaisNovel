@@ -39,6 +39,16 @@ class AnalyticsService {
     const res = await fetch(`${API_BASE_URL}/analytics/my-books`, { headers: this.getAuthHeaders() })
     return res.json()
   }
+
+  async getAgeDistribution() {
+    const res = await fetch(`${API_BASE_URL}/analytics/age-distribution`, { headers: this.getAuthHeaders() })
+    return res.json()
+  }
+
+  async getAvailableYears() {
+    const res = await fetch(`${API_BASE_URL}/analytics/available-years`, { headers: this.getAuthHeaders() })
+    return res.json()
+  }
 }
 
 const analyticsService = new AnalyticsService()

@@ -3,6 +3,27 @@
 const { sequelize } = require('../models')
 const { Op } = require('sequelize')
 
+// 根據資料庫方言回傳對應的時間欄位擷取語法
+function sqlExtract(dialect, part, alias, column = 'created_at') {
+  const col = `${alias}.${column}`
+  if (part === 'DATE') {
+    // 日期截斷（去除時間）
+    return dialect === 'postgres' ? `DATE(${col})` : `DATE(${col})`
+  }
+  if (dialect === 'postgres') {
+    // EXTRACT 回傳 numeric
+    return `EXTRACT(${part} FROM ${col})`
+  }
+  // 預設 MySQL / MariaDB
+  return `${part}(${col})`
+}
+
+function sqlYearExpr(dialect, tableAlias = null, column = 'created_at') {
+  const col = tableAlias ? `${tableAlias}.${column}` : column
+  if (dialect === 'postgres') return `EXTRACT(YEAR FROM ${col})::int`
+  return `YEAR(${col})`
+}
+
 // 檢查表是否存在某欄位
 async function tableHasColumn(tableName, columnName) {
   try {
@@ -92,6 +113,7 @@ function buildEmptyBuckets(granularity, baseDate = new Date(), custom = {}) {
 // 觀看歷史
 async function viewsHistory(req, res) {
   try {
+    const dialect = typeof sequelize.getDialect === 'function' ? sequelize.getDialect() : 'postgres'
     const { granularity = 'day', year, book_id: bookId } = req.query
     const { start, end } = getRangeBounds(granularity, new Date(), { year: year ? parseInt(year, 10) : undefined })
     const buckets = buildEmptyBuckets(granularity, new Date(), { year: year ? parseInt(year, 10) : undefined })
@@ -107,21 +129,21 @@ async function viewsHistory(req, res) {
     let groupExpr, idxMapper
     const alias = 'v'
     if (granularity === 'day') {
-      groupExpr = `HOUR(${alias}.created_at)`
+      groupExpr = sqlExtract(dialect, 'HOUR', alias)
       idxMapper = (row) => parseInt(row.bucket, 10)
     } else if (granularity === 'month') {
-      groupExpr = `DAY(${alias}.created_at)`
+      groupExpr = sqlExtract(dialect, 'DAY', alias)
       idxMapper = (row) => parseInt(row.bucket, 10) - 1
     } else if (granularity === 'year') {
-      groupExpr = `MONTH(${alias}.created_at)`
+      groupExpr = sqlExtract(dialect, 'MONTH', alias)
       idxMapper = (row) => parseInt(row.bucket, 10) - 1
     } else {
       // custom
       if (buckets.bucket === 'hour') {
-        groupExpr = `HOUR(${alias}.created_at)`
+        groupExpr = sqlExtract(dialect, 'HOUR', alias)
         idxMapper = (row) => parseInt(row.bucket, 10)
       } else if (buckets.bucket === 'day') {
-        groupExpr = `DATE(${alias}.created_at)`
+        groupExpr = sqlExtract(dialect, 'DATE', alias)
         // 映射到 labels 的索引
         const indexMap = new Map(labels.map((l, idx) => [l, idx]))
         idxMapper = (row) => {
@@ -129,7 +151,7 @@ async function viewsHistory(req, res) {
           return indexMap.get(`${d.getMonth() + 1}/${d.getDate()}`)
         }
       } else {
-        groupExpr = `MONTH(${alias}.created_at)`
+        groupExpr = sqlExtract(dialect, 'MONTH', alias)
         idxMapper = (row) => parseInt(row.bucket, 10) - 1
       }
     }
@@ -161,6 +183,7 @@ async function viewsHistory(req, res) {
 // 下載歷史
 async function downloadsHistory(req, res) {
   try {
+    const dialect = typeof sequelize.getDialect === 'function' ? sequelize.getDialect() : 'postgres'
     const { granularity = 'day', year, book_id: bookId } = req.query
     const { start, end } = getRangeBounds(granularity, new Date(), { year: year ? parseInt(year, 10) : undefined })
     const buckets = buildEmptyBuckets(granularity, new Date(), { year: year ? parseInt(year, 10) : undefined })
@@ -176,27 +199,27 @@ async function downloadsHistory(req, res) {
     let groupExpr, idxMapper
     const dalias = 'd'
     if (granularity === 'day') {
-      groupExpr = `HOUR(${dalias}.created_at)`
+      groupExpr = sqlExtract(dialect, 'HOUR', dalias)
       idxMapper = (row) => parseInt(row.bucket, 10)
     } else if (granularity === 'month') {
-      groupExpr = `DAY(${dalias}.created_at)`
+      groupExpr = sqlExtract(dialect, 'DAY', dalias)
       idxMapper = (row) => parseInt(row.bucket, 10) - 1
     } else if (granularity === 'year') {
-      groupExpr = `MONTH(${dalias}.created_at)`
+      groupExpr = sqlExtract(dialect, 'MONTH', dalias)
       idxMapper = (row) => parseInt(row.bucket, 10) - 1
     } else {
       if (buckets.bucket === 'hour') {
-        groupExpr = `HOUR(${dalias}.created_at)`
+        groupExpr = sqlExtract(dialect, 'HOUR', dalias)
         idxMapper = (row) => parseInt(row.bucket, 10)
       } else if (buckets.bucket === 'day') {
-        groupExpr = `DATE(${dalias}.created_at)`
+        groupExpr = sqlExtract(dialect, 'DATE', dalias)
         const indexMap = new Map(labels.map((l, idx) => [l, idx]))
         idxMapper = (row) => {
           const d = new Date(row.bucket)
           return indexMap.get(`${d.getMonth() + 1}/${d.getDate()}`)
         }
       } else {
-        groupExpr = `MONTH(${dalias}.created_at)`
+        groupExpr = sqlExtract(dialect, 'MONTH', dalias)
         idxMapper = (row) => parseInt(row.bucket, 10) - 1
       }
     }
@@ -228,6 +251,7 @@ async function downloadsHistory(req, res) {
 // 收藏歷史
 async function favoritesHistory(req, res) {
   try {
+    const dialect = typeof sequelize.getDialect === 'function' ? sequelize.getDialect() : 'postgres'
     const { granularity = 'day', year, book_id: bookId } = req.query
     const { start, end } = getRangeBounds(granularity, new Date(), { year: year ? parseInt(year, 10) : undefined })
     const buckets = buildEmptyBuckets(granularity, new Date(), { year: year ? parseInt(year, 10) : undefined })
@@ -237,27 +261,27 @@ async function favoritesHistory(req, res) {
     let groupExpr, idxMapper
     const ubalias = 'ub'
     if (granularity === 'day') {
-      groupExpr = `HOUR(${ubalias}.created_at)`
+      groupExpr = sqlExtract(dialect, 'HOUR', ubalias)
       idxMapper = (row) => parseInt(row.bucket, 10)
     } else if (granularity === 'month') {
-      groupExpr = `DAY(${ubalias}.created_at)`
+      groupExpr = sqlExtract(dialect, 'DAY', ubalias)
       idxMapper = (row) => parseInt(row.bucket, 10) - 1
     } else if (granularity === 'year') {
-      groupExpr = `MONTH(${ubalias}.created_at)`
+      groupExpr = sqlExtract(dialect, 'MONTH', ubalias)
       idxMapper = (row) => parseInt(row.bucket, 10) - 1
     } else {
       if (buckets.bucket === 'hour') {
-        groupExpr = `HOUR(${ubalias}.created_at)`
+        groupExpr = sqlExtract(dialect, 'HOUR', ubalias)
         idxMapper = (row) => parseInt(row.bucket, 10)
       } else if (buckets.bucket === 'day') {
-        groupExpr = `DATE(${ubalias}.created_at)`
+        groupExpr = sqlExtract(dialect, 'DATE', ubalias)
         const indexMap = new Map(labels.map((l, idx) => [l, idx]))
         idxMapper = (row) => {
           const d = new Date(row.bucket)
           return indexMap.get(`${d.getMonth() + 1}/${d.getDate()}`)
         }
       } else {
-        groupExpr = `MONTH(${ubalias}.created_at)`
+        groupExpr = sqlExtract(dialect, 'MONTH', ubalias)
         idxMapper = (row) => parseInt(row.bucket, 10) - 1
       }
     }
@@ -377,17 +401,19 @@ function formatAgeRange(ageRange) {
 async function getAvailableYears(req, res) {
   try {
     const { BookView, BookDownload } = require('../models')
+    const dialect = typeof sequelize.getDialect === 'function' ? sequelize.getDialect() : 'postgres'
     
     // 查詢觀看記錄中的年份
+    const yearExpr = sqlYearExpr(dialect, null, 'created_at')
     const viewYears = await sequelize.query(`
-      SELECT DISTINCT YEAR(created_at) as year 
+      SELECT DISTINCT ${yearExpr} as year 
       FROM book_views 
       ORDER BY year
     `, { type: sequelize.QueryTypes.SELECT })
     
     // 查詢下載記錄中的年份
     const downloadYears = await sequelize.query(`
-      SELECT DISTINCT YEAR(created_at) as year 
+      SELECT DISTINCT ${yearExpr} as year 
       FROM book_downloads 
       ORDER BY year
     `, { type: sequelize.QueryTypes.SELECT })
