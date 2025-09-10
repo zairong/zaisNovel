@@ -156,14 +156,37 @@ async function createBook(req, res) {
 }
 // 更新書籍   
 async function updateBook(req, res) {
-  const { id } = req.params
-  const { title, author, isbn, price, description, category } = req.body
-  const book = await Book.findByPk(id)
-  if (!book) return res.status(404).json({ success: false, message: '找不到該書籍' })
-  const allowed = await canManage(req, book)
-  if (!allowed) return res.status(403).json({ success: false, message: '權限不足，無法管理此書籍' })
-  await book.update({ title, author_name: author, isbn, price, description, category })
-  return res.json({ success: true, data: serializeBook(book), message: '書籍更新成功' })
+  try {
+    const { id } = req.params
+    const { title, author, isbn, price, description, category } = req.body
+
+    const book = await Book.findByPk(id)
+    if (!book) return res.status(404).json({ success: false, message: '找不到該書籍' })
+
+    const allowed = await canManage(req, book)
+    if (!allowed) return res.status(403).json({ success: false, message: '權限不足，無法管理此書籍' })
+
+    // 僅更新有提供的欄位，避免把未提供的欄位設為 undefined/null
+    const payload = {}
+    if (typeof title !== 'undefined') payload.title = title
+    if (typeof author !== 'undefined') payload.author_name = author
+    if (typeof isbn !== 'undefined') payload.isbn = isbn
+    if (typeof price !== 'undefined') {
+      if (price === '' || price === null) payload.price = null
+      else payload.price = Number(price)
+    }
+    if (typeof description !== 'undefined') payload.description = description
+    if (typeof category !== 'undefined') payload.category = category
+
+    await book.update(payload)
+    return res.json({ success: true, data: serializeBook(book), message: '書籍更新成功' })
+  } catch (err) {
+    // 回傳更友善的驗證錯誤訊息
+    if (err && (err.name === 'SequelizeValidationError' || err.name === 'SequelizeUniqueConstraintError')) {
+      return res.status(400).json({ success: false, message: err.message })
+    }
+    return res.status(500).json({ success: false, message: '伺服器錯誤', error: err.message })
+  }
 }
 // 刪除書籍
 async function deleteBook(req, res) {
