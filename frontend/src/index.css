@@ -14,6 +14,22 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   -webkit-text-size-adjust: 100%;
+  /* Global RWD variables */
+  --container-max: 1200px;
+  --container-padding: 1rem;
+  --bp-xl: 1366px;
+  --bp-lg: 1200px;
+  --bp-md: 1024px;
+  --bp-sm: 768px;
+  --bp-xs: 480px;
+  /* Fluid type scale */
+  --step--2: clamp(0.80rem, 0.10vw + 0.78rem, 0.88rem);
+  --step--1: clamp(0.90rem, 0.20vw + 0.85rem, 0.98rem);
+  --step-0: clamp(1.00rem, 0.30vw + 0.95rem, 1.125rem);
+  --step-1: clamp(1.25rem, 0.50vw + 1.10rem, 1.50rem);
+  --step-2: clamp(1.50rem, 0.80vw + 1.20rem, 2.00rem);
+  --step-3: clamp(2.00rem, 1.20vw + 1.50rem, 2.50rem);
+  --step-4: clamp(2.50rem, 1.70vw + 1.80rem, 3.20rem);
 }
 
 * {
@@ -75,12 +91,18 @@ a:hover {
 }
 
 h1 {
-  font-size: 3.2em;
+  font-size: var(--step-4);
   line-height: 1.1;
   font-family: 'Cinzel', serif;
   color: #ffd700;
   text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
 }
+/* Fluid heading sizes for other levels */
+h2 { font-size: var(--step-3); }
+h3 { font-size: var(--step-2); }
+h4 { font-size: var(--step-1); }
+h5 { font-size: var(--step-0); }
+h6 { font-size: var(--step--1); }
 
 button {
   border-radius: 8px;
@@ -106,6 +128,37 @@ button:focus,
 button:focus-visible {
   outline: 2px solid #ffd700;
   outline-offset: 2px;
+}
+
+/* Layout utilities */
+.container {
+  width: min(100% - (var(--container-padding) * 2), var(--container-max));
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.grid { display: grid; gap: 1rem; }
+.grid.auto-fit-250 { grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); }
+.grid.auto-fit-320 { grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); }
+.grid.auto-fit-360 { grid-template-columns: repeat(auto-fit, minmax(360px, 1fr)); }
+
+.stack-0 { display: grid; gap: 0; }
+.stack-1 { display: grid; gap: 0.5rem; }
+.stack-2 { display: grid; gap: 1rem; }
+.stack-3 { display: grid; gap: 1.5rem; }
+.stack-4 { display: grid; gap: 2rem; }
+
+/* Visibility helpers */
+@media (max-width: 1024px) { .hide-md-down { display: none !important; } }
+@media (min-width: 1025px) { .only-mobile { display: none !important; } }
+
+/* Media elements responsive defaults */
+img, video, canvas, svg { max-width: 100%; height: auto; }
+
+.table-responsive {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
 /* 自定義滾動條 */
@@ -161,12 +214,12 @@ body {
 
 /* 特定元素保持原有鼠標樣式 */
 button, 
-a, 
-input, 
-textarea, 
-select,
-[role="button"],
-[tabindex] {
+ a, 
+ input, 
+ textarea, 
+ select,
+ [role="button"],
+ [tabindex] {
   cursor: pointer !important;
 }
 

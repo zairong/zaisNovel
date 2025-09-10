@@ -1,6 +1,8 @@
 .aboutPage {
   min-height: 100vh;
-  padding: 2rem;
+  max-width: var(--container-max);
+  margin: 0 auto;
+  padding: clamp(1rem, 4vw, 2rem);
   animation: fadeInUp 0.8s ease-out;
 }
 
@@ -16,7 +18,7 @@
 }
 
 .aboutPage h2 {
-  font-size: 2.5rem;
+  font-size: var(--step-2);
   color: #ffd700;
   font-family: 'Cinzel', serif;
   font-weight: 700;
@@ -40,7 +42,7 @@
 .aboutContent {
   background: rgba(26, 26, 46, 0.8);
   border-radius: 15px;
-  padding: 2rem;
+  padding: clamp(1.25rem, 3vw, 2rem);
   backdrop-filter: blur(15px);
   border: 1px solid rgba(255, 215, 0, 0.2);
   position: relative;
@@ -63,14 +65,14 @@
   
   p {
     color: #e6e6fa;
-    line-height: 1.6;
+    line-height: 1.75;
     margin-bottom: 1.5rem;
-    font-size: 1.1rem;
+    font-size: clamp(1rem, 1vw, 1.1rem);
   }
   
   h3 {
     color: #ffd700;
-    font-size: 1.5rem;
+    font-size: var(--step-0);
     margin: 2rem 0 1rem;
     font-family: 'Cinzel', serif;
     font-weight: 600;
@@ -124,32 +126,32 @@
 /* 響應式設計 */
 @media (max-width: 768px) {
   .aboutPage {
-    padding: 1rem;
+    padding: clamp(0.75rem, 3vw, 1rem);
   }
   
   .aboutPage h2 {
-    font-size: 2rem;
+    font-size: clamp(1.6rem, 4vw, 2rem);
   }
   
   .aboutContent {
-    padding: 1.5rem;
+    padding: clamp(1rem, 3vw, 1.5rem);
   }
   
   .aboutContent h3 {
-    font-size: 1.3rem;
+    font-size: clamp(1.05rem, 2.5vw, 1.3rem);
   }
 }
 
 @media (max-width: 480px) {
   .aboutPage h2 {
-    font-size: 1.8rem;
+    font-size: clamp(1.4rem, 5vw, 1.8rem);
   }
   
   .aboutContent {
-    padding: 1rem;
+    padding: clamp(0.75rem, 3vw, 1rem);
   }
   
   .aboutContent p {
-    font-size: 1rem;
+    font-size: clamp(0.95rem, 3vw, 1rem);
   }
 } 

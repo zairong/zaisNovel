@@ -1,6 +1,8 @@
 .booksPage {
   min-height: 100vh;
-  padding: 2rem;
+  max-width: var(--container-max);
+  margin: 0 auto;
+  padding: clamp(1rem, 4vw, 2rem);
   animation: fadeInUp 0.8s ease-out;
 }
 
@@ -24,8 +26,8 @@
 .pageHeader {
   position: relative;
   display: flex;
-  padding: 2rem;
-  margin-bottom: 2rem;
+  padding: clamp(1.25rem, 3vw, 2rem);
+  margin-bottom: clamp(1rem, 3vw, 2rem);
   border-radius: 18px;
   overflow: hidden;
   background:
@@ -79,7 +81,7 @@
 
 .headerStats {
   display: flex;
-  gap: 2rem;
+  gap: clamp(1rem, 3vw, 2rem);
   flex-wrap: wrap;
 }
 
@@ -104,18 +106,18 @@
 .pageActions {
   margin-top: 1rem;
   display: flex;
-  gap: 1rem;
+  gap: clamp(0.75rem, 2vw, 1rem);
   flex-wrap: wrap;
 }
 
 .searchFilterSection {
   background: rgba(26, 26, 46, 0.6);
   border-radius: 12px;
-  padding: 1.5rem;
+  padding: clamp(1rem, 3vw, 1.5rem);
   backdrop-filter: blur(10px);
   border: 1px solid rgba(255, 215, 0, 0.2);
   display: flex;
-  gap: 1rem;
+  gap: clamp(0.75rem, 2vw, 1rem);
   flex-wrap: wrap;
   align-items: center;
 }
@@ -253,12 +255,12 @@
 
 .emptyState {
   text-align: center;
-  padding: 3rem;
+  padding: clamp(2rem, 4vw, 3rem);
   color: #e6e6fa;
 }
 
 .emptyIcon {
-  font-size: 4rem;
+  font-size: clamp(3rem, 5vw, 4rem);
   color: rgba(255, 215, 0, 0.5);
   margin-bottom: 1rem;
 }
@@ -266,25 +268,25 @@
 .emptyState h3 {
   color: #ffd700;
   margin-bottom: 1rem;
-  font-size: 1.5rem;
+  font-size: clamp(1.25rem, 2.5vw, 1.5rem);
 }
 
 .emptyState p {
   color: rgba(230, 230, 250, 0.8);
-  font-size: 1.1rem;
+  font-size: clamp(1rem, 2.5vw, 1.1rem);
 }
 
 .booksGrid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-  gap: 2rem;
-  margin-top: 2rem;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: clamp(1rem, 2.5vw, 2rem);
+  margin-top: clamp(1rem, 3vw, 2rem);
 }
 
 .bookCard {
   background: rgba(26, 26, 46, 0.8);
   border-radius: 15px;
-  padding: 1.5rem;
+  padding: clamp(1rem, 2.5vw, 1.5rem);
   transition: all 0.3s ease;
   border: 1px solid rgba(255, 215, 0, 0.2);
   backdrop-filter: blur(10px);
@@ -321,7 +323,7 @@
 }
 
 .bookTitle {
-  font-size: 1.3rem;
+  font-size: clamp(1.1rem, 2vw, 1.3rem);
   font-weight: 600;
   color: #ffd700;
   margin: 0;
@@ -408,9 +410,9 @@
   display: flex;
 
   p {
-    margin: 0.5rem 0;
+    margin: 0.4rem 0;
     color: #e6e6fa;
-    font-size: 0.95rem;
+    font-size: clamp(0.9rem, 2vw, 0.95rem);
   }
 }
 
@@ -745,7 +747,7 @@
 
   .booksGrid {
     grid-template-columns: 1fr;
-    gap: 1.5rem;
+    gap: clamp(1rem, 3vw, 1.5rem);
   }
 
   .formRow {
@@ -768,7 +770,7 @@
   }
 
   .bookCard {
-    padding: 1rem;
+    padding: clamp(0.75rem, 3vw, 1rem);
   }
 
   .bookTitle {

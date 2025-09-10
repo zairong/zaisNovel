@@ -26,6 +26,12 @@ function EbookReader() {
     return 'dark';
   });
   const [isFullscreen, setIsFullscreen] = useState(false);
+  const [wideReading, setWideReading] = useState(() => {
+    try {
+      const saved = localStorage.getItem('ebookReaderWide')
+      return saved === 'true';
+    } catch(_) { return false; }
+  });
 
   // 主題持久化：每次變更時儲存
   useEffect(() => {
@@ -35,6 +41,11 @@ function EbookReader() {
       // 忽略存取失敗
     }
   }, [theme]);
+
+  // 持久化閱讀寬度偏好
+  useEffect(() => {
+    try { localStorage.setItem('ebookReaderWide', String(wideReading)); } catch (_) {}
+  }, [wideReading]);
 
   // 全螢幕功能 - 針對 ebookReader 元素
   const ebookReaderRef = useRef(null);
@@ -1175,6 +1186,17 @@ function EbookReader() {
               </button>
             </div>
 
+            {/* 閱讀寬度切換 */}
+            <div className={classes.themeControls}>
+              <button
+                onClick={() => setWideReading(!wideReading)}
+                className={classes.themeBtn}
+                title={wideReading ? '切換為窄列' : '切換為寬列'}
+              >
+                {wideReading ? '↔︎ 窄' : '↔︎ 寬'}
+              </button>
+            </div>
+
             {chapters.length > 0 && (
               <div className={classes.chapterControls}>
                 <button
@@ -1378,7 +1400,7 @@ function EbookReader() {
           >
             {pages.length > 0 ? (
               <div
-                className={classes.contentText}
+                className={`${classes.contentText} ${wideReading ? classes.wide : ''}`}
                 style={{
                   fontSize: `${getOptimalFontSize()}px`,
                   overflow: 'auto'

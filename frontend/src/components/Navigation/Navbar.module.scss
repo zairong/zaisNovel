@@ -715,6 +715,18 @@
   }
 }
 
+/* 13 吋以下（常見寬度 1366px）隱藏桌面導覽列文字 */
+@media (max-width: 1366px) {
+  .navLinks a {
+    .navText {
+      display: none;
+    }
+    .navIcon {
+      margin-right: 0;
+    }
+  }
+}
+
 /* 響應式設計 */
 @media (max-width: 1200px) {
   .navbar {
