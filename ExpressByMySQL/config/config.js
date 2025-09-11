@@ -31,39 +31,25 @@ const common = {
   },
   // 時區
   timezone: '+08:00',
-  // 在資料表層級設定編碼與排序規則
+  // 在資料表層級設定編碼與排序規則 (PostgreSQL 不需要 charset 和 collate)
   define: {
-    // 編碼
-    charset: 'utf8mb4',
-    // 排序規則
-    collate: 'utf8mb4_unicode_ci'
+    // PostgreSQL 使用預設的 UTF-8 編碼
+    underscored: false,
+    freezeTableName: true
   },
   // 資料庫選項 - 針對 Render 平台優化
   dialectOptions: {
-    // 編碼
-    charset: 'utf8mb4',
     // 保持連線存活，降低閒置中斷
     keepAlive: true,
     // 連線超時設定 (增加到 90 秒)
     connectTimeout: 90000,
     // 請求超時設定 (增加到 90 秒)
     requestTimeout: 90000,
-    // TCP Keepalive 設定 - 防止連線被中間設備關閉
-    keepAliveInitialDelayMillis: 0,
     // SSL 設定 (生產環境可能需要)
     ssl: process.env.NODE_ENV === 'production' ? {
       require: true,
       rejectUnauthorized: false
-    } : false,
-    // 額外的 PostgreSQL 連線選項
-    application_name: 'zaisnovel-app',
-    // 連線字串參數
-    options: {
-      // 啟用 TCP keepalive
-      keepAlive: true,
-      // 設定 keepalive 間隔 (秒)
-      keepAliveInitialDelayMillis: 0
-    }
+    } : false
   },
   // 重試設定 - 針對 Render 平台優化
   retry: {

@@ -124,14 +124,16 @@ async function start() {
     await sequelize.authenticate()
     console.log('✅ 資料庫連線成功')
     
-    // 設定連線錯誤處理
-    sequelize.connectionManager.on('connect', (connection) => {
-      console.log('🔗 新資料庫連線已建立')
-    })
-    
-    sequelize.connectionManager.on('disconnect', (connection) => {
-      console.log('🔌 資料庫連線已斷開')
-    })
+    // 設定連線錯誤處理 (僅在開發環境)
+    if (process.env.NODE_ENV === 'development') {
+      sequelize.connectionManager.on('connect', (connection) => {
+        console.log('🔗 新資料庫連線已建立')
+      })
+      
+      sequelize.connectionManager.on('disconnect', (connection) => {
+        console.log('🔌 資料庫連線已斷開')
+      })
+    }
     
     // 定期檢查連線健康狀態
     setInterval(async () => {
