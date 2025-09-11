@@ -18,7 +18,9 @@
     "db:migrate:status": "sequelize-cli db:migrate:status --config ./config/config.js --migrations-path ./migrations",
     "db:seed-hourly": "node ./scripts/seed-hourly-data.js",
     "check-config": "node ./scripts/check-render-config.js",
-    "debug-db": "node ./scripts/check-render-config.js && node setup.js"
+    "debug-db": "node ./scripts/check-render-config.js && node setup.js",
+    "monitor-db": "node ./scripts/monitor-db-connections.js",
+    "test-db": "node ./scripts/test-db-connection.js"
   },
   "keywords": [],
   "author": "",

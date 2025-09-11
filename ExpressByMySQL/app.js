@@ -123,9 +123,37 @@ async function start() {
     console.log('🔌 測試資料庫連線...')
     await sequelize.authenticate()
     console.log('✅ 資料庫連線成功')
+    
+    // 設定連線錯誤處理
+    sequelize.connectionManager.on('connect', (connection) => {
+      console.log('🔗 新資料庫連線已建立')
+    })
+    
+    sequelize.connectionManager.on('disconnect', (connection) => {
+      console.log('🔌 資料庫連線已斷開')
+    })
+    
+    // 定期檢查連線健康狀態
+    setInterval(async () => {
+      try {
+        await sequelize.authenticate()
+        console.log('💚 資料庫連線健康檢查通過')
+      } catch (error) {
+        console.error('💔 資料庫連線健康檢查失敗:', error.message)
+      }
+    }, 300000) // 每 5 分鐘檢查一次
+    
   } catch (error) {
     console.error('❌ 無法連線至資料庫：', error.message)
     console.error('👉 請檢查 .env 是否正確設定 DB_HOST/DB_PORT/DB_NAME/DB_USERNAME/DB_PASSWORD 或 DATABASE_URL')
+    
+    // 在生產環境中，不要立即退出，而是重試
+    if (process.env.NODE_ENV === 'production') {
+      console.log('🔄 生產環境：將在 10 秒後重試連線...')
+      setTimeout(() => start(), 10000)
+      return
+    }
+    
     process.exit(1)
   }
 

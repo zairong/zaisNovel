@@ -14,18 +14,20 @@ const common = {
   dialect: 'postgres',
   // 是否顯示 SQL 語句
   logging: process.env.NODE_ENV === 'development' ? console.log : false,
-  // 連線池設定
+  // 連線池設定 - 針對 Render 平台優化
   pool: {
-    // 最大連線數
-    max: 5,
+    // 最大連線數 (Render 免費方案限制)
+    max: 3,
     // 最小連線數
-    min: 1,
-    // 連線超時時間 (增加到 60 秒)
-    acquire: 60000,
-    // 閒置連線超時時間
-    idle: 60000,
+    min: 0,
+    // 連線超時時間 (增加到 90 秒)
+    acquire: 90000,
+    // 閒置連線超時時間 (減少到 30 秒，避免閒置過久)
+    idle: 30000,
     // 定期回收過久未使用的連線（毫秒）
-    evict: 10000
+    evict: 5000,
+    // 連線池健康檢查間隔
+    validate: true
   },
   // 時區
   timezone: '+08:00',
@@ -36,23 +38,34 @@ const common = {
     // 排序規則
     collate: 'utf8mb4_unicode_ci'
   },
-  // 資料庫選項
+  // 資料庫選項 - 針對 Render 平台優化
   dialectOptions: {
     // 編碼
     charset: 'utf8mb4',
     // 保持連線存活，降低閒置中斷
     keepAlive: true,
-    // 連線超時設定
-    connectTimeout: 60000,
-    // 請求超時設定
-    requestTimeout: 60000,
+    // 連線超時設定 (增加到 90 秒)
+    connectTimeout: 90000,
+    // 請求超時設定 (增加到 90 秒)
+    requestTimeout: 90000,
+    // TCP Keepalive 設定 - 防止連線被中間設備關閉
+    keepAliveInitialDelayMillis: 0,
     // SSL 設定 (生產環境可能需要)
     ssl: process.env.NODE_ENV === 'production' ? {
       require: true,
       rejectUnauthorized: false
-    } : false
+    } : false,
+    // 額外的 PostgreSQL 連線選項
+    application_name: 'zaisnovel-app',
+    // 連線字串參數
+    options: {
+      // 啟用 TCP keepalive
+      keepAlive: true,
+      // 設定 keepalive 間隔 (秒)
+      keepAliveInitialDelayMillis: 0
+    }
   },
-  // 重試設定
+  // 重試設定 - 針對 Render 平台優化
   retry: {
     match: [
       /ETIMEDOUT/,
@@ -69,9 +82,14 @@ const common = {
       /SequelizeHostNotFoundError/,
       /SequelizeHostNotReachableError/,
       /SequelizeInvalidConnectionError/,
-      /SequelizeConnectionTimedOutError/
+      /SequelizeConnectionTimedOutError/,
+      /Connection reset by peer/,
+      /Connection terminated unexpectedly/
     ],
-    max: 3
+    max: 5,
+    // 重試間隔 (毫秒)
+    backoffBase: 1000,
+    backoffExponent: 2
   }
 }
 
