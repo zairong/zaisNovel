@@ -20,6 +20,7 @@
     "test:cors": "node test-cors.js",
     "start:render-final": "node start-render-final.js",
     "start:app-render": "node app-render.js",
+    "start:test": "node app-test.js",
     "db:migrate": "sequelize-cli db:migrate --config ./config/config.js --migrations-path ./migrations",
     "db:migrate:undo": "sequelize-cli db:migrate:undo --config ./config/config.js --migrations-path ./migrations",
     "db:migrate:status": "sequelize-cli db:migrate:status --config ./config/config.js --migrations-path ./migrations",
