@@ -110,6 +110,12 @@ class AuthService {
       'Content-Type': 'application/json'
     };
     
+    console.log('🔑 認證服務 - Token 狀態:', {
+      hasToken: !!token,
+      tokenLength: token ? token.length : 0,
+      tokenPreview: token ? token.substring(0, 20) + '...' : '無'
+    });
+    
     if (token) {
       headers['Authorization'] = `Bearer ${token}`;
     }
