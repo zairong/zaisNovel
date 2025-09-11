@@ -19,7 +19,13 @@ class HttpService {
   // 獲取請求頭
   getHeaders() {
     try {
-      return authService.getAuthHeaders();
+      const headers = authService.getAuthHeaders();
+      console.log('🔐 發送請求標頭:', {
+        hasAuth: !!headers.Authorization,
+        authType: headers.Authorization ? headers.Authorization.substring(0, 20) + '...' : '無',
+        contentType: headers['Content-Type']
+      });
+      return headers;
     } catch (error) {
       // 如果獲取認證標頭失敗，返回基本標頭
       console.warn('獲取認證標頭失敗，使用基本標頭:', error);
