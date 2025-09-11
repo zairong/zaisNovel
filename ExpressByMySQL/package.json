@@ -24,6 +24,7 @@
     "fix:cors": "node fix-cors.js",
     "start:cors-fix": "node app-cors-fix.js",
     "start:render-cors": "node start-cors-fix.js",
+    "start:render-simple": "node start-render-simple.js",
     "db:migrate": "sequelize-cli db:migrate --config ./config/config.js --migrations-path ./migrations",
     "db:migrate:undo": "sequelize-cli db:migrate:undo --config ./config/config.js --migrations-path ./migrations",
     "db:migrate:status": "sequelize-cli db:migrate:status --config ./config/config.js --migrations-path ./migrations",
