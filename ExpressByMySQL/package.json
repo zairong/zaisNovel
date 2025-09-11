@@ -15,7 +15,6 @@
     "start:simple": "node start-simple.js",
     "start:debug": "node start-debug.js",
     "start:render-fixed": "node start-render-fixed.js",
-    "start:minimal": "node start-minimal.js",
     "start:simple-app": "node app-simple.js",
     "test:cors": "node test-cors.js",
     "start:render-final": "node start-render-final.js",
