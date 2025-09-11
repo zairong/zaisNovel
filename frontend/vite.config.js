@@ -11,8 +11,7 @@ export default defineConfig({
   server: {
     port: 5173,
     host: '127.0.0.1',  // 強制使用 IPv4
-    // 暫時恢復 proxy 設定，讓登入功能可以正常工作
-    // 等 Nginx 配置完成後再移除
+    // 開發環境代理設定（僅在開發時使用）
     proxy: {
       '/api': {
         target: 'http://127.0.0.1:3000',

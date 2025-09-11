@@ -3,11 +3,11 @@ import authService from '../services/authService';
 import { apiConfig } from '../services/config';
 
 // 優先使用環境變數，否則使用配置檔案的設定
-const API_BASE_URL = import.meta.env.VITE_API_BASE || apiConfig.baseURL;
+const API_BASE_URL = import.meta.env.VITE_API_URL || apiConfig.baseURL;
 
 console.log('🔧 前端 API 配置:', {
   NODE_ENV: import.meta.env.MODE,
-  VITE_API_BASE: import.meta.env.VITE_API_BASE,
+  VITE_API_URL: import.meta.env.VITE_API_URL,
   finalAPIURL: API_BASE_URL
 });
 

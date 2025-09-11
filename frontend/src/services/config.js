@@ -7,8 +7,8 @@ const config = {
   // 生產環境
   production: {
     // Render 靜態站建議用 VITE_ 前綴注入
-    baseURL: (typeof import.meta !== 'undefined' && import.meta.env && import.meta.env.VITE_API_BASE)
-      || process.env.VITE_API_BASE
+    baseURL: (typeof import.meta !== 'undefined' && import.meta.env && import.meta.env.VITE_API_URL)
+      || process.env.VITE_API_URL
       || 'https://zaisnovel-backend.onrender.com/api',  // 後端服務的正確 URL
   }
 };
