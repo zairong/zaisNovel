@@ -24,7 +24,15 @@ async function retryOperation(operation, maxRetries = 3, delay = 5000) {
 async function testConnection() {
   try {
     console.log('🔍 測試資料庫連線...');
-    await sequelize.authenticate();
+    
+    // 設定連線超時
+    const timeoutPromise = new Promise((_, reject) => {
+      setTimeout(() => reject(new Error('連線測試超時')), 30000); // 30 秒超時
+    });
+    
+    const authPromise = sequelize.authenticate();
+    
+    await Promise.race([authPromise, timeoutPromise]);
     console.log('✅ 資料庫連線測試成功');
     return true;
   } catch (error) {
@@ -38,7 +46,7 @@ async function setup() {
     console.log('🚀 開始設置系統...');
     
     // 測試資料庫連線
-    const isConnected = await retryOperation(testConnection, 3, 10000);
+    const isConnected = await retryOperation(testConnection, 2, 5000);
     if (!isConnected) {
       throw new Error('無法連接到資料庫，請檢查資料庫設定');
     }
@@ -47,12 +55,12 @@ async function setup() {
     console.log('📊 同步資料庫結構...');
     await retryOperation(async () => {
       await sequelize.sync({ force: false }); // force: false 表示不刪除現有數據
-    }, 3, 5000);
+    }, 2, 3000);
     console.log('✅ 資料庫結構同步完成');
     
     // 初始化管理員帳戶
     console.log('👤 初始化管理員帳戶...');
-    await retryOperation(initAdmin, 3, 3000);
+    await retryOperation(initAdmin, 2, 2000);
     console.log('✅ 管理員帳戶初始化完成');
     
     console.log('');
