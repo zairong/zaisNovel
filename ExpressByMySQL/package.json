@@ -12,6 +12,7 @@
     "migrate": "sequelize-cli db:migrate --config ./config/config.js --migrations-path ./migrations",
     "start:deploy": "npm run setup && npm run migrate && node app.js",
     "start:render": "node start-render.js",
+    "start:simple": "node start-simple.js",
     "db:migrate": "sequelize-cli db:migrate --config ./config/config.js --migrations-path ./migrations",
     "db:migrate:undo": "sequelize-cli db:migrate:undo --config ./config/config.js --migrations-path ./migrations",
     "db:migrate:status": "sequelize-cli db:migrate:status --config ./config/config.js --migrations-path ./migrations",
