@@ -13,15 +13,28 @@ const DEFAULT_PORT = parseInt(process.env.PORT || '3000', 10)
 // 引入 API 路由模組
 const apiRoutes = require('./api/index')
 
-// CORS 中間件設定
+// CORS 中間件設定 - 強化版
 const corsOptions = {
-  origin: [
-    'https://zaisnovel-frontend.onrender.com',
-    'http://localhost:3000',
-    'http://localhost:5173',
-    'http://127.0.0.1:3000',
-    'http://127.0.0.1:5173'
-  ],
+  origin: function (origin, callback) {
+    // 允許的來源列表
+    const allowedOrigins = [
+      'https://zaisnovel-frontend.onrender.com',
+      'http://localhost:3000',
+      'http://localhost:5173',
+      'http://127.0.0.1:3000',
+      'http://127.0.0.1:5173'
+    ];
+    
+    // 允許沒有 origin 的請求（如移動應用程式或 Postman）
+    if (!origin) return callback(null, true);
+    
+    if (allowedOrigins.indexOf(origin) !== -1) {
+      callback(null, true);
+    } else {
+      console.log('🚫 CORS 拒絕來源:', origin);
+      callback(new Error('不允許的 CORS 來源'));
+    }
+  },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
   allowedHeaders: [
@@ -31,21 +44,60 @@ const corsOptions = {
     'Origin',
     'Accept',
     'Access-Control-Request-Method',
-    'Access-Control-Request-Headers'
+    'Access-Control-Request-Headers',
+    'Cache-Control',
+    'Pragma'
   ],
-  optionsSuccessStatus: 200 // 支援舊版瀏覽器
+  exposedHeaders: [
+    'Access-Control-Allow-Origin',
+    'Access-Control-Allow-Credentials'
+  ],
+  optionsSuccessStatus: 200, // 支援舊版瀏覽器
+  maxAge: 86400 // 預檢請求快取 24 小時
 }
 
 app.use(cors(corsOptions))
 
-// 專門處理 OPTIONS 請求的中間件
+// CORS 調試中間件
+app.use((req, res, next) => {
+  console.log('🌐 請求詳情:', {
+    method: req.method,
+    url: req.url,
+    origin: req.headers.origin,
+    userAgent: req.headers['user-agent'],
+    timestamp: new Date().toISOString()
+  });
+  next();
+});
+
+// 專門處理 OPTIONS 請求的中間件 - 強化版
 app.options('*', (req, res) => {
-  res.header('Access-Control-Allow-Origin', req.headers.origin || '*')
-  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS')
-  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With, Origin, Accept, Access-Control-Request-Method, Access-Control-Request-Headers')
-  res.header('Access-Control-Allow-Credentials', 'true')
-  res.header('Access-Control-Max-Age', '86400') // 24 小時
-  res.sendStatus(200)
+  const origin = req.headers.origin;
+  const allowedOrigins = [
+    'https://zaisnovel-frontend.onrender.com',
+    'http://localhost:3000',
+    'http://localhost:5173',
+    'http://127.0.0.1:3000',
+    'http://127.0.0.1:5173'
+  ];
+  
+  // 檢查來源是否被允許
+  if (origin && allowedOrigins.includes(origin)) {
+    res.header('Access-Control-Allow-Origin', origin);
+  } else if (!origin) {
+    // 允許沒有 origin 的請求
+    res.header('Access-Control-Allow-Origin', '*');
+  } else {
+    console.log('🚫 OPTIONS 請求拒絕來源:', origin);
+    return res.status(403).json({ error: 'CORS 不允許的來源' });
+  }
+  
+  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
+  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With, Origin, Accept, Access-Control-Request-Method, Access-Control-Request-Headers, Cache-Control, Pragma');
+  res.header('Access-Control-Allow-Credentials', 'true');
+  res.header('Access-Control-Expose-Headers', 'Access-Control-Allow-Origin, Access-Control-Allow-Credentials');
+  res.header('Access-Control-Max-Age', '86400'); // 24 小時
+  res.sendStatus(200);
 })
 
 // 中間件設定（提高 body 大小限制，避免描述或少量 Base64 過大導致 413）
@@ -57,6 +109,20 @@ app.use(methodOverride('_method'))
 app.use(express.static(path.join(__dirname, 'public')))
 // 封面圖片靜態檔案服務
 app.use('/uploads/covers', express.static(path.join(__dirname, 'uploads', 'covers')))
+
+// CORS 測試端點
+app.get('/api/cors-test', (req, res) => {
+  res.json({
+    success: true,
+    message: 'CORS 測試成功',
+    origin: req.headers.origin,
+    timestamp: new Date().toISOString(),
+    headers: {
+      'Access-Control-Allow-Origin': res.get('Access-Control-Allow-Origin'),
+      'Access-Control-Allow-Credentials': res.get('Access-Control-Allow-Credentials')
+    }
+  });
+});
 
 // API 路由設定
 app.use('/api', apiRoutes)
