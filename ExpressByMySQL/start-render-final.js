@@ -205,8 +205,19 @@ app.post('/api/auth/login', async (req, res) => {
       
       await user.update({ last_login: new Date() })
       
-      // 生成簡單的 token（暫時解決方案）
-      const token = 'jwt-token-' + Date.now() + '-' + user.id
+      // 生成 JWT token
+      const jwt = require('jsonwebtoken')
+      const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key-change-in-production'
+      const token = jwt.sign(
+        { 
+          id: user.id, 
+          username: user.username, 
+          email: user.email, 
+          role: user.role 
+        },
+        JWT_SECRET,
+        { expiresIn: '24h' }
+      )
       
       res.json({
         success: true,
