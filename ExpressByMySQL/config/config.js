@@ -13,15 +13,15 @@ const common = {
   // 資料庫類型
   dialect: 'postgres',
   // 是否顯示 SQL 語句
-  logging: false,
+  logging: process.env.NODE_ENV === 'development' ? console.log : false,
   // 連線池設定
   pool: {
     // 最大連線數
     max: 5,
     // 最小連線數
     min: 1,
-    // 連線超時時間
-    acquire: 30000,
+    // 連線超時時間 (增加到 60 秒)
+    acquire: 60000,
     // 閒置連線超時時間
     idle: 60000,
     // 定期回收過久未使用的連線（毫秒）
@@ -41,7 +41,37 @@ const common = {
     // 編碼
     charset: 'utf8mb4',
     // 保持連線存活，降低閒置中斷
-    keepAlive: true
+    keepAlive: true,
+    // 連線超時設定
+    connectTimeout: 60000,
+    // 請求超時設定
+    requestTimeout: 60000,
+    // SSL 設定 (生產環境可能需要)
+    ssl: process.env.NODE_ENV === 'production' ? {
+      require: true,
+      rejectUnauthorized: false
+    } : false
+  },
+  // 重試設定
+  retry: {
+    match: [
+      /ETIMEDOUT/,
+      /EHOSTUNREACH/,
+      /ECONNRESET/,
+      /ECONNREFUSED/,
+      /ETIMEDOUT/,
+      /ESOCKETTIMEDOUT/,
+      /EHOSTUNREACH/,
+      /EPIPE/,
+      /EAI_AGAIN/,
+      /SequelizeConnectionError/,
+      /SequelizeConnectionRefusedError/,
+      /SequelizeHostNotFoundError/,
+      /SequelizeHostNotReachableError/,
+      /SequelizeInvalidConnectionError/,
+      /SequelizeConnectionTimedOutError/
+    ],
+    max: 3
   }
 }
 

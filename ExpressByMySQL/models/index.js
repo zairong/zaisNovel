@@ -22,20 +22,36 @@ const db = {}; // 資料庫物件
 
 let sequelize; // Sequelize 實例
 try {
+  console.log('🔍 正在建立資料庫連線...');
+  console.log('📊 環境:', env);
+  console.log('🔧 使用環境變數:', config.use_env_variable);
+  
   if (config.use_env_variable) {
     const url = process.env[config.use_env_variable];
     if (!url) {
       throw new Error(`環境變數 ${config.use_env_variable} 未設定或為空`);
     }
+    console.log('🌐 使用 DATABASE_URL 連線');
+    // 隱藏密碼的 URL 用於日誌
+    const safeUrl = url.replace(/:([^:@]+)@/, ':***@');
+    console.log('🔗 資料庫 URL:', safeUrl);
     sequelize = new Sequelize(url, config);
   } else {
     if (!config.username || !config.database || !config.host) {
       throw new Error('資料庫設定不完整，請確認 DB_USERNAME/DB_NAME/DB_HOST 是否已在 .env 設定');
     }
+    console.log('🔧 使用個別環境變數連線');
+    console.log('🏠 主機:', config.host);
+    console.log('🔌 端口:', config.port);
+    console.log('📚 資料庫:', config.database);
+    console.log('👤 用戶名:', config.username);
     sequelize = new Sequelize(config.database, config.username, config.password || '', config);
   }
+  
+  console.log('✅ Sequelize 實例建立成功');
 } catch (error) {
   console.error('❌ 建立 Sequelize 連線設定失敗:', error.message);
+  console.error('🔍 錯誤詳情:', error);
   throw error;
 }
 // 讀取所有模型檔案
