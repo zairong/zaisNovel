@@ -4,7 +4,7 @@ import { routeGuard } from './routerUtils'
 import auditService from '../services/auditService'
 
 // 路由守衛 - 前端權限保護
-function RouteGuard({ children, userPermissions = {} }) {
+function RouteGuard({ children, user = null, userPermissions = {} }) {
   const location = useLocation()
   const [isChecking, setIsChecking] = useState(true)
   const [guardResult, setGuardResult] = useState(null)
@@ -19,10 +19,11 @@ function RouteGuard({ children, userPermissions = {} }) {
       setIsChecking(false)
       
       // 記錄權限檢查結果
+      const userId = user?.id || null
       if (result.allowed) {
-        auditService.logPermissionGranted(location.pathname, userPermissions)
+        auditService.logPermissionGranted(location.pathname, userPermissions, userId)
       } else {
-        auditService.logPermissionDenied(location.pathname, userPermissions)
+        auditService.logPermissionDenied(location.pathname, userPermissions, userId)
       }
     }
     

@@ -59,7 +59,7 @@ function App() {
           onLogout={handleLogout}
         />
         <main className={classes.mainContent}>
-          <RouteGuard userPermissions={userPermissions}>
+          <RouteGuard user={user} userPermissions={userPermissions}>
             <AdvancedRouteTransition>
               <AppRoutes userPermissions={userPermissions} />
             </AdvancedRouteTransition>
