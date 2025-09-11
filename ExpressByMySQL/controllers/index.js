@@ -9,7 +9,9 @@ module.exports = {
   // 審計控制器
   auditController: require('./auditController'),
   // 分析控制器
-  analyticsController: require('./analyticsController')
+  analyticsController: require('./analyticsController'),
+  // 評論控制器
+  commentController: require('./commentController')
 }
 
 

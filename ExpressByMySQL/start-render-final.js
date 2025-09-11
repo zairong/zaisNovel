@@ -375,10 +375,18 @@ app.get('/api/auth/me', async (req, res) => {
 // 引入路由
 const bookRoutes = require('./routes/bookRoutes')
 const authRoutes = require('./routes/authRoutes')
+const userBookRoutes = require('./routes/userBookRoutes')
+const analyticsRoutes = require('./routes/analyticsRoutes')
+const commentRoutes = require('./routes/commentRoutes')
+const auditRoutes = require('./routes/auditRoutes')
 
 // 使用路由
 app.use('/api/books', bookRoutes)
 app.use('/api/auth', authRoutes)
+app.use('/api/user-books', userBookRoutes)
+app.use('/api/analytics', analyticsRoutes)
+app.use('/api/comments', commentRoutes)
+app.use('/api/audit', auditRoutes)
 
 // 審計端點
 app.post('/api/audit/log', (req, res) => {
