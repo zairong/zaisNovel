@@ -17,6 +17,7 @@
     "start:render-fixed": "node start-render-fixed.js",
     "start:simple-app": "node app-simple.js",
     "test:cors": "node test-cors.js",
+    "test:cors-fix": "node test-cors-fix.js",
     "start:render-final": "node start-render-final.js",
     "start:app-render": "node app-render.js",
     "start:test": "node app-test.js",
