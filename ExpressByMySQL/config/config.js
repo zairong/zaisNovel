@@ -75,6 +75,27 @@ const common = {
   }
 }
 
+// 檢查是否為 Render 環境
+const isRender = process.env.RENDER === 'true' || process.env.NODE_ENV === 'production';
+
+// 生產環境特殊處理
+const productionConfig = {
+  // 優先使用 DATABASE_URL
+  use_env_variable: process.env.DATABASE_URL ? 'DATABASE_URL' : undefined,
+  username: process.env.DB_USERNAME || '',
+  password: process.env.DB_PASSWORD || '',
+  database: process.env.DB_NAME || 'zaisnovel',
+  host: process.env.DB_HOST || 'localhost',
+  port: parseInt(process.env.DB_PORT || '5432', 10),
+  ...common
+};
+
+// 如果沒有 DATABASE_URL 但有個別環境變數，強制使用個別變數
+if (!process.env.DATABASE_URL && process.env.DB_HOST) {
+  productionConfig.use_env_variable = undefined;
+  console.log('🔧 使用個別環境變數配置資料庫連線');
+}
+
 module.exports = {
   // 開發環境
   development: {
@@ -99,16 +120,7 @@ module.exports = {
     ...common
   },
   // 生產環境
-  production: {
-    // 若有提供 DATABASE_URL，則優先使用，否則使用個別環境變數
-    use_env_variable: process.env.DATABASE_URL ? 'DATABASE_URL' : undefined,
-    username: process.env.DB_USERNAME || '',
-    password: process.env.DB_PASSWORD || '',
-    database: process.env.DB_NAME || 'books',
-    host: process.env.DB_HOST || 'localhost',
-    port: parseInt(process.env.DB_PORT || '5432', 10),
-    ...common
-  }
+  production: productionConfig
 }
 
 

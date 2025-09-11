@@ -26,6 +26,16 @@ try {
   console.log('📊 環境:', env);
   console.log('🔧 使用環境變數:', config.use_env_variable);
   
+  // 顯示所有相關的環境變數（隱藏敏感資訊）
+  console.log('🌍 環境變數檢查:');
+  console.log('  - NODE_ENV:', process.env.NODE_ENV);
+  console.log('  - DATABASE_URL:', process.env.DATABASE_URL ? '已設定' : '未設定');
+  console.log('  - DB_HOST:', process.env.DB_HOST || '未設定');
+  console.log('  - DB_PORT:', process.env.DB_PORT || '未設定');
+  console.log('  - DB_NAME:', process.env.DB_NAME || '未設定');
+  console.log('  - DB_USERNAME:', process.env.DB_USERNAME || '未設定');
+  console.log('  - DB_PASSWORD:', process.env.DB_PASSWORD ? '已設定' : '未設定');
+  
   if (config.use_env_variable) {
     const url = process.env[config.use_env_variable];
     if (!url) {
@@ -35,6 +45,12 @@ try {
     // 隱藏密碼的 URL 用於日誌
     const safeUrl = url.replace(/:([^:@]+)@/, ':***@');
     console.log('🔗 資料庫 URL:', safeUrl);
+    
+    // 檢查 URL 格式
+    if (!url.startsWith('postgresql://') && !url.startsWith('postgres://')) {
+      console.warn('⚠️  警告: DATABASE_URL 不是 PostgreSQL 格式');
+    }
+    
     sequelize = new Sequelize(url, config);
   } else {
     if (!config.username || !config.database || !config.host) {
@@ -52,6 +68,14 @@ try {
 } catch (error) {
   console.error('❌ 建立 Sequelize 連線設定失敗:', error.message);
   console.error('🔍 錯誤詳情:', error);
+  
+  // 提供更詳細的故障排除建議
+  console.log('\n🔧 故障排除建議:');
+  console.log('1. 檢查 Render 環境變數設定');
+  console.log('2. 確認 PostgreSQL 資料庫已建立');
+  console.log('3. 檢查 DATABASE_URL 格式是否正確');
+  console.log('4. 確認資料庫服務正在運行');
+  
   throw error;
 }
 // 讀取所有模型檔案
