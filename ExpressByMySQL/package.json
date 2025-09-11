@@ -13,6 +13,8 @@
     "start:deploy": "npm run setup && npm run migrate && node app.js",
     "start:render-db-fix": "node start-render-db-fix.js",
     "start:render-fixed": "node start-render-fixed.js",
+    "start:render-no-db": "node start-render-no-db.js",
+    "start:render-final": "node start-render-final.js",
     "db:migrate": "sequelize-cli db:migrate --config ./config/config.js --migrations-path ./migrations",
     "db:migrate:undo": "sequelize-cli db:migrate:undo --config ./config/config.js --migrations-path ./migrations",
     "db:migrate:status": "sequelize-cli db:migrate:status --config ./config/config.js --migrations-path ./migrations",
