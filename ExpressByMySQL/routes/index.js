@@ -61,8 +61,18 @@ router.get('/cors-test', (req, res) => {
     status: 'CORS 正常',
     timestamp: new Date().toISOString(),
     origin: req.get('Origin') || 'no-origin',
-    userAgent: req.get('User-Agent') || 'no-user-agent'
+    userAgent: req.get('User-Agent') || 'no-user-agent',
+    headers: req.headers
   })
+})
+
+// 專門的 OPTIONS 測試端點
+router.options('/cors-test', (req, res) => {
+  res.header('Access-Control-Allow-Origin', req.headers.origin || '*')
+  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS')
+  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With, Origin, Accept')
+  res.header('Access-Control-Allow-Credentials', 'true')
+  res.sendStatus(200)
 })
 // 導出路由
 module.exports = router
