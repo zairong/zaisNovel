@@ -57,7 +57,7 @@ try {
       console.warn('⚠️  資料庫設定不完整，將使用預設配置');
       console.warn('🔧 請確認 DB_USERNAME/DB_NAME/DB_HOST 是否已在 .env 設定');
       // 使用預設配置，避免拋出錯誤
-      config = {
+      const defaultConfig = {
         host: 'localhost',
         port: 5432,
         database: 'zaisnovel',
@@ -72,13 +72,20 @@ try {
           idle: 10000
         }
       };
+      console.log('🔧 使用預設配置連線');
+      console.log('🏠 主機:', defaultConfig.host);
+      console.log('🔌 端口:', defaultConfig.port);
+      console.log('📚 資料庫:', defaultConfig.database);
+      console.log('👤 用戶名:', defaultConfig.username);
+      sequelize = new Sequelize(defaultConfig.database, defaultConfig.username, defaultConfig.password || '', defaultConfig);
+    } else {
+      console.log('🔧 使用個別環境變數連線');
+      console.log('🏠 主機:', config.host);
+      console.log('🔌 端口:', config.port);
+      console.log('📚 資料庫:', config.database);
+      console.log('👤 用戶名:', config.username);
+      sequelize = new Sequelize(config.database, config.username, config.password || '', config);
     }
-    console.log('🔧 使用個別環境變數連線');
-    console.log('🏠 主機:', config.host);
-    console.log('🔌 端口:', config.port);
-    console.log('📚 資料庫:', config.database);
-    console.log('👤 用戶名:', config.username);
-    sequelize = new Sequelize(config.database, config.username, config.password || '', config);
   }
   
   console.log('✅ Sequelize 實例建立成功');
