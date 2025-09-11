@@ -352,34 +352,63 @@ app.get('/api/auth/me', async (req, res) => {
       });
     }
     
-    // 簡單的 token 驗證（暫時解決方案）
-    if (token.startsWith('maintenance-token-') || token.startsWith('jwt-token-')) {
+    // 使用 JWT 驗證
+    const jwt = require('jsonwebtoken');
+    const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key-change-in-production';
+    
+    try {
+      const decoded = jwt.verify(token, JWT_SECRET);
+      
+      // 檢查用戶是否存在且啟用
+      const { User } = require('./models');
+      const user = await User.findByPk(decoded.id);
+      
+      if (!user || !user.is_active) {
+        return res.status(401).json({
+          success: false,
+          message: '用戶不存在或已被停用'
+        });
+      }
+      
       res.json({
         success: true,
         data: {
-          user: {
-            id: 1,
-            username: 'admin',
-            email: 'admin@zaisnovel.com',
-            role: 'admin',
-            is_active: true
-          }
+          user: user.toJSON()
         }
-      })
-    } else {
-      res.status(401).json({
-        success: false,
-        message: '無效的認證令牌'
-      })
+      });
+      
+    } catch (jwtError) {
+      console.log('JWT 驗證失敗:', jwtError.message);
+      
+      // 向後兼容：檢查舊的簡單 token 格式
+      if (token.startsWith('maintenance-token-') || token.startsWith('jwt-token-')) {
+        res.json({
+          success: true,
+          data: {
+            user: {
+              id: 1,
+              username: 'admin',
+              email: 'admin@zaisnovel.com',
+              role: 'admin',
+              is_active: true
+            }
+          }
+        });
+      } else {
+        res.status(401).json({
+          success: false,
+          message: '無效的認證令牌'
+        });
+      }
     }
     
   } catch (error) {
-    console.error('用戶資訊處理錯誤:', error)
+    console.error('用戶資訊處理錯誤:', error);
     res.status(500).json({
       success: false,
       message: '獲取用戶資訊失敗',
       error: error.message
-    })
+    });
   }
 });
 
