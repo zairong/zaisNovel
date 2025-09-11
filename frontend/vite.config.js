@@ -8,6 +8,12 @@ export default defineConfig({
   define: {
     global: 'globalThis',
   },
+  build: {
+    target: 'es2015', // 降低構建目標以兼容 Node.js 16
+    rollupOptions: {
+      external: [],
+    },
+  },
   server: {
     port: 5173,
     host: '127.0.0.1',  // 強制使用 IPv4
