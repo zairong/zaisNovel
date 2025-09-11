@@ -54,7 +54,24 @@ try {
     sequelize = new Sequelize(url, config);
   } else {
     if (!config.username || !config.database || !config.host) {
-      throw new Error('資料庫設定不完整，請確認 DB_USERNAME/DB_NAME/DB_HOST 是否已在 .env 設定');
+      console.warn('⚠️  資料庫設定不完整，將使用預設配置');
+      console.warn('🔧 請確認 DB_USERNAME/DB_NAME/DB_HOST 是否已在 .env 設定');
+      // 使用預設配置，避免拋出錯誤
+      config = {
+        host: 'localhost',
+        port: 5432,
+        database: 'zaisnovel',
+        username: 'postgres',
+        password: '',
+        dialect: 'postgres',
+        logging: false,
+        pool: {
+          max: 5,
+          min: 0,
+          acquire: 30000,
+          idle: 10000
+        }
+      };
     }
     console.log('🔧 使用個別環境變數連線');
     console.log('🏠 主機:', config.host);
