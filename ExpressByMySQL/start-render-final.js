@@ -372,41 +372,11 @@ app.get('/api/auth/me', async (req, res) => {
   }
 });
 
-// 書籍端點
-app.get('/api/books', async (req, res) => {
-  try {
-    // 嘗試使用資料庫模型
-    try {
-      const { Book } = require('./models')
-      const books = await Book.findAll({
-        include: ['author'],
-        order: [['created_at', 'DESC']]
-      })
-      
-      res.json({
-        success: true,
-        data: books
-      })
-      
-    } catch (dbError) {
-      console.error('資料庫錯誤，返回空列表:', dbError.message)
-      
-      res.json({
-        success: true,
-        data: [],
-        message: '書籍服務暫時不可用（維護模式）'
-      })
-    }
-    
-  } catch (error) {
-    console.error('書籍處理錯誤:', error)
-    res.status(500).json({
-      success: false,
-      message: '獲取書籍失敗',
-      error: error.message
-    })
-  }
-});
+// 引入書籍路由
+const bookRoutes = require('./routes/bookRoutes')
+
+// 使用書籍路由
+app.use('/api/books', bookRoutes)
 
 // 審計端點
 app.post('/api/audit/log', (req, res) => {
