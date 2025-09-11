@@ -372,11 +372,13 @@ app.get('/api/auth/me', async (req, res) => {
   }
 });
 
-// 引入書籍路由
+// 引入路由
 const bookRoutes = require('./routes/bookRoutes')
+const authRoutes = require('./routes/authRoutes')
 
-// 使用書籍路由
+// 使用路由
 app.use('/api/books', bookRoutes)
+app.use('/api/auth', authRoutes)
 
 // 審計端點
 app.post('/api/audit/log', (req, res) => {
