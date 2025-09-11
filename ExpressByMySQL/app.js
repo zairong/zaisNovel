@@ -25,16 +25,10 @@ const corsOptions = {
       'http://127.0.0.1:5173'
     ];
     
-    console.log('🔍 CORS 檢查來源:', origin);
-    
     // 允許沒有 origin 的請求（如移動應用程式或 Postman）
-    if (!origin) {
-      console.log('✅ 允許無來源請求');
-      return callback(null, true);
-    }
+    if (!origin) return callback(null, true);
     
     if (allowedOrigins.indexOf(origin) !== -1) {
-      console.log('✅ 允許來源:', origin);
       callback(null, true);
     } else {
       console.log('🚫 CORS 拒絕來源:', origin);
@@ -62,35 +56,7 @@ const corsOptions = {
   maxAge: 86400 // 預檢請求快取 24 小時
 }
 
-// 先嘗試使用 cors 套件
 app.use(cors(corsOptions))
-
-// 備用 CORS 中間件 - 確保所有請求都有正確的 CORS 標頭
-app.use((req, res, next) => {
-  const origin = req.headers.origin;
-  const allowedOrigins = [
-    'https://zaisnovel-frontend.onrender.com',
-    'http://localhost:3000',
-    'http://localhost:5173',
-    'http://127.0.0.1:3000',
-    'http://127.0.0.1:5173'
-  ];
-  
-  // 設置 CORS 標頭
-  if (origin && allowedOrigins.includes(origin)) {
-    res.header('Access-Control-Allow-Origin', origin);
-  } else if (!origin) {
-    res.header('Access-Control-Allow-Origin', '*');
-  }
-  
-  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
-  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With, Origin, Accept, Access-Control-Request-Method, Access-Control-Request-Headers, Cache-Control, Pragma');
-  res.header('Access-Control-Allow-Credentials', 'true');
-  res.header('Access-Control-Expose-Headers', 'Access-Control-Allow-Origin, Access-Control-Allow-Credentials');
-  res.header('Access-Control-Max-Age', '86400');
-  
-  next();
-})
 
 // CORS 調試中間件
 app.use((req, res, next) => {
@@ -115,16 +81,10 @@ app.options('*', (req, res) => {
     'http://127.0.0.1:5173'
   ];
   
-  console.log('🔍 OPTIONS 請求檢查來源:', origin);
-  console.log('🔍 OPTIONS 請求 URL:', req.url);
-  console.log('🔍 OPTIONS 請求方法:', req.method);
-  
   // 檢查來源是否被允許
   if (origin && allowedOrigins.includes(origin)) {
-    console.log('✅ OPTIONS 允許來源:', origin);
     res.header('Access-Control-Allow-Origin', origin);
   } else if (!origin) {
-    console.log('✅ OPTIONS 允許無來源請求');
     // 允許沒有 origin 的請求
     res.header('Access-Control-Allow-Origin', '*');
   } else {
@@ -137,8 +97,6 @@ app.options('*', (req, res) => {
   res.header('Access-Control-Allow-Credentials', 'true');
   res.header('Access-Control-Expose-Headers', 'Access-Control-Allow-Origin, Access-Control-Allow-Credentials');
   res.header('Access-Control-Max-Age', '86400'); // 24 小時
-  
-  console.log('✅ OPTIONS 回應標頭已設置');
   res.sendStatus(200);
 })
 
