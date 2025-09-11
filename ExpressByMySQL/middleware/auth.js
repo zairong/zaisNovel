@@ -46,8 +46,15 @@ const authenticate = async (req, res, next) => {
     }
     
     const authHeader = req.headers.authorization;
+    console.log('🔐 認證檢查:', {
+      path: normalizedPath,
+      method: req.method,
+      authHeader: authHeader ? '已提供' : '未提供',
+      userAgent: req.headers['user-agent']
+    });
     
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      console.log('❌ 認證失敗: 未提供有效的 Authorization header');
       return res.status(401).json({
         success: false,
         message: '未提供認證令牌'
