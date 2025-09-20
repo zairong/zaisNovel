@@ -7,6 +7,7 @@ import RouteGuard from './router/RouteGuard'
 import AdvancedRouteTransition from './components/UI/AdvancedRouteTransition'
 import ProgressBar from './components/UI/ProgressBar'
 import CustomCursor from './components/UI/CustomCursor'
+import NetworkStatus from './components/UI/NetworkStatus'
 import { useAuth } from './hooks/useAuth'
 
 function App() {
@@ -52,6 +53,7 @@ function App() {
       <div className={classes.app}>
         <CustomCursor />
         <ProgressBar />
+        <NetworkStatus />
         <Navbar 
           user={user}
           userPermissions={userPermissions} 

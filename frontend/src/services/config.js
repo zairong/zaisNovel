@@ -1,20 +1,18 @@
 // API 配置
 const config = {
-  // 開發環境
+  // 開發環境 - 使用 Vite 代理
   development: {
-    baseURL: 'http://127.0.0.1:3000/api',
+    baseURL: '/api',
   },
   // 生產環境
   production: {
-    // Render 靜態站建議用 VITE_ 前綴注入
-    baseURL: (typeof import.meta !== 'undefined' && import.meta.env && import.meta.env.VITE_API_URL)
-      || process.env.VITE_API_URL
-      || 'https://zaisnovel-backend.onrender.com/api',  // 後端服務的正確 URL
+    baseURL: 'https://zaisnovel-backend.onrender.com/api',
   }
 };
 
 // 根據環境選擇配置
-const env = process.env.NODE_ENV || 'development';
+const env = (typeof import.meta !== 'undefined' && import.meta.env && import.meta.env.MODE) || 'development';
 export const apiConfig = config[env];
 
 export default apiConfig;
+  

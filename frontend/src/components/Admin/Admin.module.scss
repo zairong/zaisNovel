@@ -14,7 +14,7 @@
 
   h2 {
     margin: 0;
-    color: #333;
+    color: #fff;
     font-size: 24px;
     font-weight: 600;
   }
@@ -94,6 +94,7 @@
 
   td {
     vertical-align: middle;
+    color: #000;
   }
 }
 
@@ -103,10 +104,15 @@
   border-radius: 4px;
   font-size: 12px;
   background: white;
+  color: #000;
 
   &:focus {
     outline: none;
     border-color: #667eea;
+  }
+
+  option {
+    color: #000;
   }
 }
 
@@ -289,10 +295,14 @@
   .roleSelect {
     background: #4a5568;
     border-color: #4a5568;
-    color: #e2e8f0;
+    color: #000;
 
     &:focus {
       border-color: #667eea;
+    }
+
+    option {
+      color: #000;
     }
   }
 

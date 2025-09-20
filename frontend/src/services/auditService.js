@@ -55,19 +55,38 @@ class AuditService {
     console.log('角色切換事件:', event)
   }
 
+  // 檢查網路連接狀態
+  isOnline() {
+    return navigator.onLine;
+  }
+
   // 發送到後端
   async sendToBackend(event) {
+    // 檢查網路連接
+    if (!this.isOnline()) {
+      console.warn('🌐 網路離線，審計事件保留在本地:', event.type);
+      return;
+    }
+
     try {
       // 使用統一的 API 配置
       const { apiConfig } = await import('./config');
       const API_BASE_URL = import.meta.env.VITE_API_URL || apiConfig.baseURL;
+      
+      // 添加超時控制
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 10000); // 10秒超時
+      
       const response = await fetch(`${API_BASE_URL}/audit/log`, {
         method: 'POST',
         headers: { 
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify(event)
-      })
+        body: JSON.stringify(event),
+        signal: controller.signal
+      });
+      
+      clearTimeout(timeoutId);
       
       if (response.ok) {
         // 檢查響應是否包含 JSON 內容
@@ -91,9 +110,15 @@ class AuditService {
         console.error('❌ 審計事件發送失敗:', response.status);
       }
     } catch (error) {
-      console.error('❌ 審計事件發送錯誤:', error)
+      if (error.name === 'AbortError') {
+        console.warn('⏰ 審計事件發送超時，保留在本地:', event.type);
+      } else if (error.message.includes('Failed to fetch') || error.message.includes('ERR_INTERNET_DISCONNECTED')) {
+        console.warn('🌐 網路連接問題，審計事件保留在本地:', event.type);
+      } else {
+        console.error('❌ 審計事件發送錯誤:', error);
+      }
       // 如果後端不可用，保留本地記錄
-      console.log('📝 審計事件保留在本地:', event.type)
+      console.log('📝 審計事件保留在本地:', event.type);
     }
   }
 

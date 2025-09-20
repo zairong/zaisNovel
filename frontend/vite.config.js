@@ -8,6 +8,14 @@ export default defineConfig({
   define: {
     global: 'globalThis',
   },
+  css: {
+    preprocessorOptions: {
+      scss: {
+        api: 'modern-compiler', // 使用現代 Sass API
+        silenceDeprecations: ['legacy-js-api']
+      }
+    }
+  },
   build: {
     target: 'es2015', // 降低構建目標以兼容 Node.js 16
     rollupOptions: {
@@ -17,12 +25,12 @@ export default defineConfig({
   server: {
     port: 5173,
     host: '127.0.0.1',  // 強制使用 IPv4
-    // 開發環境代理設定（僅在開發時使用）
+    // 開發環境代理設定 - 指向 Render 後端
     proxy: {
       '/api': {
-        target: 'http://127.0.0.1:3000',
+        target: 'https://zaisnovel-backend.onrender.com', // 使用 Render 後端
         changeOrigin: true,
-        secure: false,
+        secure: true, // 使用 HTTPS
         rewrite: (path) => path,
         configure: (proxy, options) => {
           proxy.on('error', (err, req, res) => {
@@ -30,6 +38,8 @@ export default defineConfig({
           });
           proxy.on('proxyReq', (proxyReq, req, res) => {
             proxyReq.setHeader('X-Special-Proxy-Header', 'foobar');
+            // 添加必要的 CORS headers
+            proxyReq.setHeader('Origin', 'https://zaisnovel-frontend.onrender.com');
           });
           proxy.on('proxyRes', (proxyRes, req, res) => {
             console.log('Received Response from the Target:', proxyRes.statusCode, req.url);

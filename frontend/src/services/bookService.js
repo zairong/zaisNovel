@@ -24,8 +24,20 @@ class BookService {
     }
   }
 
+  // 檢查網路連接狀態
+  isOnline() {
+    return navigator.onLine;
+  }
+
   // 取得電子書列表（分頁）
   async getEbooks(page = 1, pageSize = 20, search = '', category = 'all') {
+    // 檢查網路連接
+    if (!this.isOnline()) {
+      const offlineError = new Error('網路離線，無法載入電子書');
+      offlineError.code = 'OFFLINE';
+      throw offlineError;
+    }
+
     try {
       const params = new URLSearchParams({
         page: page.toString(),
@@ -34,9 +46,16 @@ class BookService {
         category: category
       })
       
+      // 添加超時控制
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 15000); // 15秒超時
+      
       const response = await fetch(`${API_BASE_URL}/books/ebooks?${params}`, {
-        headers: authService.getAuthHeaders()
+        headers: authService.getAuthHeaders(),
+        signal: controller.signal
       })
+      
+      clearTimeout(timeoutId);
       const data = await response.json()
       
       if (data.success) {
@@ -46,6 +65,17 @@ class BookService {
         throw new Error(data.message || '取得電子書失敗')
       }
     } catch (error) {
+      if (error.name === 'AbortError') {
+        console.warn('⏰ 電子書載入超時');
+        const timeoutError = new Error('載入超時，請檢查網路連接');
+        timeoutError.code = 'TIMEOUT';
+        throw timeoutError;
+      } else if (error.message.includes('Failed to fetch') || error.message.includes('ERR_INTERNET_DISCONNECTED')) {
+        console.warn('🌐 網路連接問題');
+        const networkError = new Error('網路連接問題，請檢查網路設定');
+        networkError.code = 'NETWORK_ERROR';
+        throw networkError;
+      }
       console.error('取得電子書錯誤:', error)
       throw error
     }
