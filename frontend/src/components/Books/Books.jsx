@@ -302,24 +302,22 @@ function Books({ userPermissions = {} }) {
     <div className={classes.pageContainer}>
       {/* 頁面標題和操作區 */}
       <div className={classes.pageHeader}>
-        <div className={classes.headerStats}>
-          <span className={classes.statItem}>
-            <span className={classes.statNumber}>{books.length}</span>
-            <span className={classes.statLabel}>總書籍數</span>
-          </span>
+        {/* 頁面標題 */}
+        <div className={classes.pageTitle}>
+          📚 書籍管理
         </div>
-        <div className={classes.headerStats}>
-          <span className={classes.statItem}>
-            <span className={classes.statNumber}>{categories.length}</span>
-            <span className={classes.statLabel}>分類數</span>
-          </span>
-        </div>
-
-        <div className={classes.headerStats}>
-          <span className={classes.statItem}>
-            <span className={classes.statNumber}>{books.length}</span>
-            <span className={classes.statLabel}>總書籍數</span>
-          </span>
+        {/* 統計資訊 */}
+        <div className={classes.headerContent}>
+          <div className={classes.headerStats}>
+            <span className={classes.statItem}>
+              <span className={classes.statNumber}>{books.length}</span>
+              <span className={classes.statLabel}>總書籍數</span>
+            </span>
+            <span className={classes.statItem}>
+              <span className={classes.statNumber}>{categories.length}</span>
+              <span className={classes.statLabel}>分類數</span>
+            </span>
+          </div>
         </div>
         {/* 搜尋和篩選區 */}
         <div className={classes.searchFilterSection}>

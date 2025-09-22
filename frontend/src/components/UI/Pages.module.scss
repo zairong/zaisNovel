@@ -1482,6 +1482,59 @@
   }
 }
 
+@media (max-width: 992px) {
+  .pageHeader {
+    flex-direction: column;
+    gap: 1.5rem;
+    text-align: center;
+  }
+  
+  /* 讓標題/內容/操作在平板寬度撐滿 */
+  .headerContent,
+  .pageTitle,
+  .pageActions {
+    width: 100%;
+  }
+  
+  .headerStats {
+    justify-content: center;
+    gap: 1rem;
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .statItem {
+    width: 100%;
+  }
+  
+  .searchFilterSection {
+    flex-direction: column;
+    gap: 1rem;
+    align-items: stretch;
+  }
+
+  /* 搜尋框在平板改為上下排列並撐滿 */
+  .searchBox {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.8rem;
+  }
+  .searchBox input {
+    width: 100%;
+  }
+  .searchBtn {
+    width: 100%;
+  }
+
+  /* 篩選區在平板直向堆疊並撐滿 */
+  .filterSection {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.8rem;
+  }
+}
+
 @media (max-width: 768px) {
   .pageContainer {
     padding: 1rem;
@@ -1493,6 +1546,13 @@
     text-align: center;
   }
   
+  /* 讓標題/內容/操作在手機寬度撐滿 */
+  .headerContent,
+  .pageTitle,
+  .pageActions {
+    width: 100%;
+  }
+  
   .headerContent h2 {
     font-size: 1.8rem;
   }
@@ -1500,11 +1560,39 @@
   .headerStats {
     justify-content: center;
     gap: 1rem;
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .statItem {
+    width: 100%;
   }
   
   .searchFilterSection {
     flex-direction: column;
     gap: 1rem;
+    align-items: stretch;
+  }
+
+  /* 搜尋框在手機改為上下排列並撐滿 */
+  .searchBox {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.8rem;
+  }
+  .searchBox input {
+    width: 100%;
+  }
+  .searchBtn {
+    width: 100%;
+  }
+
+  /* 篩選區在手機直向堆疊並撐滿 */
+  .filterSection {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.8rem;
   }
   
   .booksGrid,
@@ -1552,6 +1640,25 @@
     font-size: 1.5rem;
   }
   
+  /* 進一步放大觸控區與留白 */
+  .searchFilterSection {
+    gap: 0.8rem;
+    padding: 1rem;
+  }
+  .searchBox input {
+    padding: 0.9rem 1.2rem;
+    font-size: 1rem;
+  }
+  .searchBtn {
+    padding: 0.9rem 1.2rem;
+    font-size: 1rem;
+  }
+  .filterSection select {
+    width: 100%;
+    padding: 0.9rem 1.2rem;
+    font-size: 1rem;
+  }
+
   .statItem {
     padding: 0.6rem 1rem;
   }

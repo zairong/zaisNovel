@@ -391,6 +391,10 @@ function EbookList({ userPermissions = {} }) {
     <div className={classes.pageContainer}>
       {/* 頁面標題和操作區 */}
       <div className={classes.pageHeader}>
+        {/* 頁面標題 */}
+        <div className={classes.pageTitle}>
+          📖 {showOnlyMyLibrary ? '我的書庫' : '書庫列表'}
+        </div>
         <div className={classes.headerContent}>
           <div className={classes.headerStats}>
             <span className={classes.statItem}>
@@ -406,10 +410,6 @@ function EbookList({ userPermissions = {} }) {
               <span className={classes.statLabel}>當前頁面</span>
             </span>
           </div>
-        </div>
-        {/* 頁面標題 */}
-        <div className={classes.pageTitle}>
-          📖 {showOnlyMyLibrary ? '我的書庫' : '書庫列表'}
         </div>
         <div className={classes.pageActions}>
           <PermissionButton
