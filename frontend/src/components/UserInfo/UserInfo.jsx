@@ -1,7 +1,6 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import analyticsService from '../../services/analyticsService';
 import { useAuth } from '../../hooks/useAuth';
-import AuthorApplicationTest from '../Test/AuthorApplicationTest';
 import classes from './UserInfo.module.scss';
 
 // 動態載入 ECharts（CDN），避免打包依賴
@@ -260,8 +259,6 @@ function PersonalInfoTab() {
         </div>
       )}
 
-      {/* 調試測試組件 */}
-      <AuthorApplicationTest />
     </div>
   );
 }
@@ -275,27 +272,14 @@ function BookHistoryTab({
   bookId,
   setBookId,
   myBooks,
-  setMyBooks,
-  ageDistribution,
-  setAgeDistribution,
   availableYears,
-  setAvailableYears,
   isLoading,
-  setError,
   viewsRef,
   downloadsRef,
   favoritesRef,
   ageChartDomRef,
-  viewsChart,
-  downloadsChart,
-  favoritesChart,
-  ageChartRef,
-  applyTick,
   setApplyTick,
-  fetchAvailableYears,
-  fetchAgeDistribution,
-  fetchAll,
-  renderCharts
+
 }) {
   // 如果沒有上傳的書籍，顯示提示訊息
   if (myBooks.length === 0) {
@@ -393,7 +377,7 @@ function BookHistoryTab({
 }
 
 export default function UserInfo() {
-  const { user, userPermissions } = useAuth();
+  const {  userPermissions } = useAuth();
   const [activeTab, setActiveTab] = useState('personal');
   const [granularity, setGranularity] = useState('day');
   const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
