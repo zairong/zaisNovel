@@ -8,7 +8,7 @@ const path = require('path')
 const cors = require('cors')
 const app = express()
 const { sequelize } = require('./models')
-const DEFAULT_PORT = parseInt(process.env.PORT || '3000', 10)
+const PORT = parseInt(process.env.PORT || '3000', 10)
 
 // 引入 API 路由模組
 const apiRoutes = require('./api/index')
@@ -160,22 +160,6 @@ app.use((err, req, res, next) => {
   })
 })
 
-function listenOnAvailablePort(app, preferredPort) {
-  return new Promise((resolve) => {
-    const server = app.listen(preferredPort)
-    server.on('listening', () => resolve({ server, port: preferredPort }))
-    server.on('error', (err) => {
-      if (err && err.code === 'EADDRINUSE') {
-        const nextPort = preferredPort + 1
-        console.warn(`⚠️  埠號 ${preferredPort} 已被佔用，改嘗試 ${nextPort} ...`)
-        resolve(listenOnAvailablePort(app, nextPort))
-      } else {
-        throw err
-      }
-    })
-  })
-}
-
 async function start() {
   console.log('🔧 環境變數狀態檢查:')
   console.log('DATABASE_URL:', process.env.DATABASE_URL ? '已設定' : '未設定')
@@ -185,10 +169,16 @@ async function start() {
   console.log('DB_USERNAME:', process.env.DB_USERNAME || '未設定')
   console.log('NODE_ENV:', process.env.NODE_ENV || '未設定')
   
-  // 先啟動服務器，再測試資料庫連線
-  const { port } = await listenOnAvailablePort(app, DEFAULT_PORT)
-  console.log(`🚀 API 服務器正在運行於 http://localhost:${port}`)
-  console.log(`📦 API 路由: /api`)
+  // 僅在指定的 PORT 上啟動（Render 只會將流量導向該 PORT）
+  const server = app.listen(PORT, () => {
+    console.log(`🚀 API 服務器正在運行於 http://localhost:${PORT}`)
+    console.log(`📦 API 路由: /api`)
+  })
+
+  // 改善與代理/負載平衡器的連線穩定性
+  // 避免與上游 60s 超時邊界過於接近
+  server.keepAliveTimeout = 65000
+  server.headersTimeout = 66000
   
   // 延遲測試資料庫連線，避免阻塞服務器啟動
   setTimeout(async () => {
@@ -221,15 +211,7 @@ async function start() {
     } catch (error) {
       console.error('❌ 無法連線至資料庫：', error.message)
       console.error('👉 請檢查 .env 是否正確設定 DB_HOST/DB_PORT/DB_NAME/DB_USERNAME/DB_PASSWORD 或 DATABASE_URL')
-      console.log('⚠️  服務器繼續運行，但資料庫功能可能不可用')
-      
-      // 在生產環境中，定期重試連線
-      if (process.env.NODE_ENV === 'production') {
-        console.log('🔄 生產環境：將在 30 秒後重試連線...')
-        setTimeout(() => {
-          start() // 遞歸調用，但不會阻塞服務器啟動
-        }, 30000)
-      }
+      console.log('⚠️  服務器繼續運行，但資料庫功能可能不可用（不重啟服務器，避免埠號漂移）')
     }
   }, 5000) // 5秒後測試資料庫連線
 }
