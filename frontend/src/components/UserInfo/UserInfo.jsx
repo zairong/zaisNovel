@@ -11,32 +11,13 @@ async function ensureEcharts() {
     script.src = 'https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js';
     script.async = true;
     script.onload = () => resolve();
-    script.onerror = (e) => reject(new Error('ECharts 載入失敗'));
+    script.onerror = () => reject(new Error('ECharts 載入失敗'));
     document.head.appendChild(script);
   });
   return window.echarts;
 }
 
-function GranularityTabs({ value, onChange }) {
-  const options = [
-    { value: 'day', label: '日(24h)' },
-    { value: 'month', label: '月(28~31天)' },
-    { value: 'year', label: '年(1~12月)' }
-  ];
-  return (
-    <div className={classes.granularityTabs}>
-      {options.map(opt => (
-        <button
-          key={opt.value}
-          onClick={() => onChange(opt.value)}
-          className={`${classes.granularityTabBtn} ${value === opt.value ? classes.granularityActive : ''}`}
-        >
-          {opt.label}
-        </button>
-      ))}
-    </div>
-  );
-}
+
 
 // 個人資訊 Tab 組件
 function PersonalInfoTab() {
