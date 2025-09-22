@@ -1,10 +1,26 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import classes from './Home.module.scss';
 import { Icon } from '../icons';
+import { useToast } from '../UI/Toast';
+import Modal from '../UI/Modal';
 
 const Home = ({ userPermissions = {} }) => {
   const [showScrollToTop, setShowScrollToTop] = useState(false);
+  const navigate = useNavigate();
+  const {  showInfo } = useToast();
+
+  const [modal, setModal] = useState({
+    open: false,
+    title: '',
+    message: '',
+    confirmText: '前往',
+    cancelText: '取消',
+    onConfirm: null,
+    hideCancel: false
+  });
+
+  const closeModal = () => setModal(prev => ({ ...prev, open: false }));
 
   // 監聽滾動事件，控制回到頂部按鈕的顯示
   useEffect(() => {
@@ -23,6 +39,122 @@ const Home = ({ userPermissions = {} }) => {
       top: 0,
       behavior: 'smooth'
     });
+  };
+
+  // 按鈕點擊處理函數
+  const handleButtonClick = (buttonType) => {
+    switch (buttonType) {
+      case 'darkPower': // 暗黑力量 - 書籍管理
+        if (!userPermissions.isAuthenticated) {
+          setModal({
+            open: true,
+            title: '需要登入',
+            message: '此功能需要登入後才能使用，請先登入或註冊。',
+            confirmText: '前往登入/註冊',
+            cancelText: '稍後',
+            onConfirm: () => { closeModal(); navigate('/auth'); },
+            hideCancel: false
+          });
+          return;
+        }
+        if (!userPermissions.canManageBooks) {
+          setModal({
+            open: true,
+            title: '權限不足',
+            message: '您沒有管理書籍的權限。若需要使用，請聯繫管理員開通權限。',
+            confirmText: '我知道了',
+            cancelText: '',
+            onConfirm: () => { closeModal(); },
+            hideCancel: true
+          });
+          return;
+        }
+        navigate('/books');
+        break;
+        
+      case 'evilRule': // 邪惡統治 - 用戶管理
+        if (!userPermissions.isAuthenticated) {
+          setModal({
+            open: true,
+            title: '需要登入',
+            message: '此功能需要登入後才能使用，請先登入或註冊。',
+            confirmText: '前往登入/註冊',
+            cancelText: '稍後',
+            onConfirm: () => { closeModal(); navigate('/auth'); },
+            hideCancel: false
+          });
+          return;
+        }
+        if (!userPermissions.canManageUsers) {
+          setModal({
+            open: true,
+            title: '權限不足',
+            message: '您沒有管理用戶的權限（需要管理者權限）。',
+            confirmText: '我知道了',
+            cancelText: '',
+            onConfirm: () => { closeModal(); },
+            hideCancel: true
+          });
+          return;
+        }
+        navigate('/admin/users');
+        break;
+        
+      case 'deathKnowledge': // 死亡知識 - 電子書庫
+        navigate('/ebooks');
+        break;
+        
+      default:
+        showInfo('功能開發中...', 2000);
+    }
+  };
+
+  // 功能卡片點擊處理
+  const handleFeatureClick = (title) => {
+    switch (title) {
+      case '黑暗圖書館': // 規則1：登入→我的書庫，未登入→提示並導向登入
+        if (!userPermissions.isAuthenticated) {
+          setModal({
+            open: true,
+            title: '需要登入',
+            message: '前往「我的書庫」需要先登入，是否現在登入/註冊？',
+            confirmText: '前往登入/註冊',
+            cancelText: '稍後',
+            onConfirm: () => { closeModal(); navigate('/auth'); },
+            hideCancel: false
+          });
+          return;
+        }
+        navigate('/my-library');
+        break;
+
+      case '邪惡書庫': // 規則2：直接進入電子書庫
+        navigate('/ebooks');
+        break;
+
+      case '獻祭儀式': // 規則3：上傳電子書（需作者）。未登入→直接登入；登入但非作者→提示是否成為作者
+        if (!userPermissions.isAuthenticated) {
+          navigate('/auth');
+          return;
+        }
+        if (!userPermissions.isAuthor) {
+          setModal({
+            open: true,
+            title: '需要作者資格',
+            message: '進行獻祭儀式（上傳電子書）需要作者資格。是否前往成為作者？',
+            confirmText: '前往成為作者',
+            cancelText: '稍後',
+            onConfirm: () => { closeModal(); navigate('/user-info'); },
+            hideCancel: false
+          });
+          return;
+        }
+        navigate('/ebooks/upload');
+        break;
+
+      default:
+        break;
+    }
   };
 
   const features = [
@@ -44,12 +176,7 @@ const Home = ({ userPermissions = {} }) => {
       description: '將新的邪惡知識獻祭到您的黑暗圖書館',
       color: '#006400'
     },
-    {
-      icon: 'read',
-      title: '靈魂閱讀',
-      description: '體驗被詛咒的閱讀界面和邪惡的翻頁動畫',
-      color: '#8b4513'
-    }
+
   ];
 
   return (
@@ -85,18 +212,30 @@ const Home = ({ userPermissions = {} }) => {
             探索禁忌的知識世界，駕馭黑暗的力量，統治您的邪惡圖書館
           </p>
           <div className={classes.heroStats}>
-            <div className={classes.stat}>
+            <button 
+              className={classes.statButton}
+              onClick={() => handleButtonClick('darkPower')}
+              title="管理書籍 - 需要登入和書籍管理權限"
+            >
               <span className={classes.statNumber}>⚡</span>
               <span className={classes.statLabel}>黑暗力量</span>
-            </div>
-            <div className={classes.stat}>
+            </button>
+            <button 
+              className={classes.statButton}
+              onClick={() => handleButtonClick('evilRule')}
+              title="管理用戶 - 需要登入和管理員權限"
+            >
               <span className={classes.statNumber}>🖤</span>
               <span className={classes.statLabel}>邪惡統治</span>
-            </div>
-            <div className={classes.stat}>
+            </button>
+            <button 
+              className={classes.statButton}
+              onClick={() => handleButtonClick('deathKnowledge')}
+              title="瀏覽電子書庫"
+            >
               <span className={classes.statNumber}>💀</span>
               <span className={classes.statLabel}>死亡知識</span>
-            </div>
+            </button>
           </div>
         </div>
 
@@ -121,7 +260,14 @@ const Home = ({ userPermissions = {} }) => {
         <h2 className={classes.sectionTitle}>黑暗系統特色</h2>
         <div className={classes.featuresGrid}>
           {features.map((feature, index) => (
-            <div key={index} className={classes.featureCard}>
+            <div 
+              key={index} 
+              className={classes.featureCard}
+              role="button"
+              tabIndex={0}
+              onClick={() => handleFeatureClick(feature.title)}
+              onKeyDown={(e) => { if (e.key === 'Enter') handleFeatureClick(feature.title) }}
+            >
               <div className={classes.featureIcon} style={{ color: feature.color }}>
                 <Icon name={feature.icon} size={40} />
               </div>
@@ -132,28 +278,7 @@ const Home = ({ userPermissions = {} }) => {
         </div>
       </section>
 
-      {/* 快速操作 */}
-      <section className={classes.quickActions}>
-        <h2 className={classes.sectionTitle}>邪惡操作</h2>
-        <div className={classes.actionsGrid}>
-          <button className={classes.actionButton}>
-            <Icon name="books" size={24} />
-            <span>統治書籍</span>
-          </button>
-          <button className={classes.actionButton}>
-            <Icon name="ebooks" size={24} />
-            <span>詛咒電子書</span>
-          </button>
-          <button className={classes.actionButton}>
-            <Icon name="upload" size={24} />
-            <span>獻祭文件</span>
-          </button>
-          <button className={classes.actionButton}>
-            <Icon name="settings" size={24} />
-            <span>邪惡設置</span>
-          </button>
-        </div>
-      </section>
+  
 
       {/* 系統狀態 */}
       <section className={classes.systemStatus}>
@@ -209,6 +334,17 @@ const Home = ({ userPermissions = {} }) => {
           </div>
         </div>
       )}
+
+      <Modal 
+        open={modal.open}
+        title={modal.title}
+        message={modal.message}
+        confirmText={modal.confirmText}
+        cancelText={modal.cancelText}
+        onConfirm={modal.onConfirm}
+        onCancel={closeModal}
+        hideCancel={modal.hideCancel}
+      />
 
     </div>
   );

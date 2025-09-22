@@ -8,6 +8,7 @@ import AdvancedRouteTransition from './components/UI/AdvancedRouteTransition'
 import ProgressBar from './components/UI/ProgressBar'
 import CustomCursor from './components/UI/CustomCursor'
 import NetworkStatus from './components/UI/NetworkStatus'
+import { ToastContainer, useToast } from './components/UI/Toast'
 import { useAuth } from './hooks/useAuth'
 
 function App() {
@@ -19,6 +20,8 @@ function App() {
     handleLogout,
     reinitializeAuth
   } = useAuth()
+  
+  const { toasts, removeToast } = useToast()
   
   console.log('App 組件狀態:', { user, userPermissions, currentRole, loading })
   
@@ -54,6 +57,7 @@ function App() {
         <CustomCursor />
         <ProgressBar />
         <NetworkStatus />
+        <ToastContainer toasts={toasts} onRemove={removeToast} />
         <Navbar 
           user={user}
           userPermissions={userPermissions} 

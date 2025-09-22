@@ -107,6 +107,35 @@ function Navbar({ user, userPermissions = {}, currentRole = 'guest', onLogout })
             </Link>
           ))}
         </div>
+
+        {/* 手機版認證區域 */}
+        <div className={classes.mobileAuthSection}>
+          {userPermissions.isAuthenticated ? (
+            <div className={classes.mobileAuthActions}>
+              <button
+                onClick={() => {
+                  onLogout && onLogout()
+                  closeMobileMenu()
+                }}
+                className={`${classes.authBtn} ${classes.logout} ${classes.fullWidth}`}
+              >
+                <span className={classes.btnIcon}>🚪</span>
+                <span className={classes.btnText}>登出</span>
+              </button>
+            </div>
+          ) : (
+            <div className={classes.mobileAuthActions}>
+              <Link
+                to="/auth"
+                className={`${classes.authBtn} ${classes.login} ${classes.fullWidth}`}
+                onClick={closeMobileMenu}
+              >
+                <span className={classes.btnIcon}>🔑</span>
+                <span className={classes.btnText}>登入</span>
+              </Link>
+            </div>
+          )}
+        </div>
       </div>
       
       {/* 桌面版認證區域 */}
