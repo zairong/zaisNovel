@@ -11,7 +11,7 @@ function About() {
         <h3>🌟 技術特色</h3>
         <ul>
           <li>前端：React + Vite</li>
-          <li>後端：Express.js + MySQL</li>
+          <li>後端：Express.js + PostgreSQL</li>
           <li>API：RESTful API 設計</li>
           <li>資料庫：Sequelize ORM</li>
         </ul>
