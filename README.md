@@ -4,7 +4,7 @@
 
 ## 🌟 技術棧
 
-### 後端 (ExpressByMySQL)
+### 後端 (ExpressByPostgreSQL)
 - **框架**: Express.js
 - **資料庫**: PostgreSQL + Sequelize ORM
 - **認證**: JWT + bcryptjs

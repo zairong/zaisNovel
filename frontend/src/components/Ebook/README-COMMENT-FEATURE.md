@@ -33,7 +33,7 @@
 
 ### 後端架構
 ```
-ExpressByMySQL/
+ExpressByPostgreSQL/
 ├── models/
 │   ├── bookComment.js          # 評論模型
 │   ├── book.js                 # 書籍模型（已更新關聯）
