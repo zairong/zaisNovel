@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import analyticsService from '../../services/analyticsService';
 import { useAuth } from '../../hooks/useAuth';
+import AuthorApplicationTest from '../Test/AuthorApplicationTest';
 import classes from './UserInfo.module.scss';
 
 // 動態載入 ECharts（CDN），避免打包依賴
@@ -39,13 +40,23 @@ function GranularityTabs({ value, onChange }) {
 }
 
 // 個人資訊 Tab 組件
-function PersonalInfoTab({ user, userPermissions }) {
-  const { handleApplyForAuthor, updateAuthState } = useAuth();
+function PersonalInfoTab() {
+  const { user, userPermissions, handleApplyForAuthor, updateAuthState } = useAuth();
   const [showAuthorForm, setShowAuthorForm] = useState(false);
   const [termsAccepted, setTermsAccepted] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
+  const [forceUpdate, setForceUpdate] = useState(0);
+
+  // 監聽認證狀態變化
+  useEffect(() => {
+    console.log('🔍 PersonalInfoTab 認證狀態變化:', {
+      user: user ? { id: user.id, role: user.role } : null,
+      userPermissions,
+      forceUpdate
+    });
+  }, [user, userPermissions, forceUpdate]);
 
   const handleAuthorApplication = async (e) => {
     e.preventDefault();
@@ -65,8 +76,28 @@ function PersonalInfoTab({ user, userPermissions }) {
       setSuccess('申請提交成功！您的權限將在審核通過後更新。');
       setShowAuthorForm(false);
       setTermsAccepted(false);
-      // 更新認證狀態
+      
+      // 強制重新渲染組件
+      setForceUpdate(prev => prev + 1);
+      
+      // 立即更新認證狀態
       updateAuthState();
+      
+      // 延遲再次更新，確保狀態同步
+      setTimeout(() => {
+        updateAuthState();
+        setForceUpdate(prev => prev + 1);
+        // 觸發全域認證變化事件，確保所有組件都能收到更新
+        if (typeof window !== 'undefined') {
+          window.dispatchEvent(new CustomEvent('auth-changed'));
+        }
+      }, 100);
+      
+      // 再次延遲更新，確保狀態完全同步
+      setTimeout(() => {
+        updateAuthState();
+        setForceUpdate(prev => prev + 1);
+      }, 500);
     } else {
       setError(result?.message || '申請失敗，請稍後再試');
     }
@@ -228,6 +259,9 @@ function PersonalInfoTab({ user, userPermissions }) {
           </div>
         </div>
       )}
+
+      {/* 調試測試組件 */}
+      <AuthorApplicationTest />
     </div>
   );
 }
@@ -642,7 +676,7 @@ export default function UserInfo() {
 
       {/* Tab 內容 */}
       {activeTab === 'personal' && (
-        <PersonalInfoTab user={user} userPermissions={userPermissions} />
+        <PersonalInfoTab />
       )}
       
       {activeTab === 'history' && canViewBookHistory && (

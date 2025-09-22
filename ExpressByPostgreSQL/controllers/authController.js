@@ -93,6 +93,8 @@ async function applyAuthor(req, res) {
   })
 
   await req.user.update({ role: 'author' })
+  // 重新載入用戶資料以獲取最新的角色資訊
+  await req.user.reload()
   const token = generateToken(req.user)
   return res.json({ success: true, message: '恭喜！已升級為作者', data: { user: req.user.toJSON(), token } })
 }

@@ -92,10 +92,12 @@ class AuthService {
     try {
       const response = await http.post('/auth/apply-author', applicationData);
       if (response.success) {
-        // 更新本地儲存的用戶資料
-        const currentUser = this.getCurrentUser();
-        const updatedUser = { ...currentUser, ...response.data.user };
-        localStorage.setItem('user', JSON.stringify(updatedUser));
+        // 直接使用後端返回的用戶資料更新本地儲存
+        localStorage.setItem('user', JSON.stringify(response.data.user));
+        // 同時更新 token
+        if (response.data.token) {
+          localStorage.setItem('token', response.data.token);
+        }
       }
       return response;
     } catch (error) {
@@ -152,6 +154,8 @@ class AuthService {
   // 獲取用戶權限
   getUserPermissions() {
     const user = this.getCurrentUser();
+    console.log('🔍 getUserPermissions 用戶資料:', user ? { id: user.id, role: user.role } : null);
+    
     if (!user) {
       return {
         isAuthenticated: false,
@@ -168,7 +172,7 @@ class AuthService {
       };
     }
 
-    return {
+    const permissions = {
       isAuthenticated: true,
       canManageBooks: user.role === 'admin' || user.role === 'author',
       canUploadBooks: user.role === 'admin' || user.role === 'author',
@@ -181,6 +185,9 @@ class AuthService {
       canReadEbooks: true,
       canAccessLibrary: true
     };
+    
+    console.log('🔍 getUserPermissions 權限結果:', permissions);
+    return permissions;
   }
 
   // 獲取用戶角色

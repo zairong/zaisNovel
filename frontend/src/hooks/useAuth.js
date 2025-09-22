@@ -22,19 +22,23 @@ export const useAuth = () => {
 
   // 更新認證狀態的函數
   const updateAuthState = useCallback(() => {
-    console.log('更新認證狀態')
+    console.log('🔄 更新認證狀態開始')
     const currentUser = authService.getCurrentUser()
     const permissions = authService.getUserPermissions()
     const role = authService.getUserRole()
     
-    console.log('更新認證狀態:', { currentUser, permissions, role })
+    console.log('📊 更新認證狀態數據:', { 
+      currentUser: currentUser ? { id: currentUser.id, role: currentUser.role } : null, 
+      permissions, 
+      role 
+    })
     
     // 使用同步方式更新狀態
     setUser(currentUser)
     setUserPermissions(permissions)
     setCurrentRole(role)
     
-    console.log('認證狀態更新完成')
+    console.log('✅ 認證狀態更新完成')
   }, [])
 
   // 同步更新認證狀態（不使用 useCallback）
