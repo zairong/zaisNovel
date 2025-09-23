@@ -48,7 +48,7 @@ class BookService {
       
       // 添加超時控制
       const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 15000); // 15秒超時
+      const timeoutId = setTimeout(() => controller.abort(), 60000); // 60秒超時
       
       const response = await fetch(`${API_BASE_URL}/books/ebooks?${params}`, {
         headers: authService.getAuthHeaders(),
@@ -338,7 +338,9 @@ class BookService {
           try {
             const encoded = filenameStarMatch[1].trim().replace(/^"|"$/g, '')
             filename = decodeURIComponent(encoded)
-          } catch (_) {}
+          } catch (error) {
+            console.error('解析檔名錯誤:', error)
+          }
         } else {
           const filenameMatch = contentDisposition.match(/filename="?([^";\n\r]+)"?/i)
           if (filenameMatch && filenameMatch[1]) {
