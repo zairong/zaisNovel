@@ -1,4 +1,4 @@
-const { Book, UserBook, sequelize, BookView, BookDownload } = require('../models')
+const { Book, UserBook, sequelize, BookView, BookDownload, BookComment } = require('../models')
 const fs = require('fs')
 const path = require('path')
 const { serializeBook, fixFilename } = require('../utils/bookUtils')
@@ -208,12 +208,17 @@ async function deleteBook(req, res) {
     } catch (e) {
       // 忽略檔案刪除錯誤
     }
+
+    // 先刪除關聯資料，避免外鍵限制造成刪除失敗
+    try { await BookComment.destroy({ where: { book_id: id }, transaction }) } catch (_) {}
+    try { await BookView.destroy({ where: { book_id: id }, transaction }) } catch (_) {}
+    try { await BookDownload.destroy({ where: { book_id: id }, transaction }) } catch (_) {}
     await UserBook.destroy({ where: { book_id: id }, transaction })
     await book.destroy({ transaction })
     await transaction.commit()
     return res.json({ success: true, message: '書籍刪除成功' })
   } catch (error) {
-    await sequelize.transaction(async () => {}) // 保證 transaction 關閉
+    try { await transaction.rollback() } catch (_) {}
     return res.status(500).json({ success: false, message: '刪除書籍時發生錯誤', error: error.message })
   }
 }
