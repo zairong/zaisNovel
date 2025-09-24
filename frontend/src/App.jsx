@@ -10,6 +10,7 @@ import CustomCursor from './components/UI/CustomCursor'
 import NetworkStatus from './components/UI/NetworkStatus'
 import { ToastContainer, useToast } from './components/UI/Toast'
 import { useAuth } from './hooks/useAuth'
+import networkDiagnostics from './utils/networkDiagnostics'
 
 function App() {
   const {
@@ -41,6 +42,51 @@ function App() {
 
     window.addEventListener('storage', handleStorageChange)
     return () => window.removeEventListener('storage', handleStorageChange)
+  }, [])
+
+  // 網路診斷功能
+  useEffect(() => {
+    // 在生產環境中，如果檢測到網路問題，執行診斷
+    const runDiagnosisIfNeeded = async () => {
+      if (import.meta.env.PROD) {
+        try {
+          // 測試基本 API 連接
+          const response = await fetch('https://zaisnovel-backend.onrender.com/api/books', {
+            method: 'HEAD',
+            mode: 'cors'
+          });
+          
+          if (!response.ok) {
+            console.warn('⚠️ 檢測到 API 連接問題，執行診斷...');
+            const results = await networkDiagnostics.runFullDiagnosis();
+            const report = networkDiagnostics.generateReport(results);
+            console.log('📊 診斷報告:', report);
+          }
+        } catch (error) {
+          console.warn('⚠️ 網路連接問題，執行診斷...', error);
+          const results = await networkDiagnostics.runFullDiagnosis();
+          const report = networkDiagnostics.generateReport(results);
+          console.log('📊 診斷報告:', report);
+        }
+      }
+    };
+
+    // 延遲執行診斷
+    const timer = setTimeout(runDiagnosisIfNeeded, 3000);
+    return () => clearTimeout(timer);
+  }, [])
+
+  // 添加全域診斷函數到 window 對象，方便手動調用
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      window.runNetworkDiagnosis = async () => {
+        console.log('🔍 手動執行網路診斷...');
+        const results = await networkDiagnostics.runFullDiagnosis();
+        const report = networkDiagnostics.generateReport(results);
+        console.log('📊 診斷報告:', report);
+        return report;
+      };
+    }
   }, [])
 
   if (loading) {
