@@ -349,14 +349,32 @@ async function downloadEbook(req, res) {
   }
   if (!book) return res.status(404).json({ success: false, message: '找不到該書籍' })
   if (!book.has_ebook) return res.status(404).json({ success: false, message: '該書籍沒有電子書檔案' })
+  // 若資料庫已存有內容，直接傳回文字內容（優先於檔案檢查，避免檔案遺失時仍可下載）
+  if (typeof book.ebook_content !== 'undefined' && book.ebook_content) {
+    let downloadName = book.ebook_filename || `${book.title || 'ebook'}.md`
+    try { downloadName = fixFilename(downloadName) } catch (_) {}
+    try {
+      const encoded = encodeURIComponent(downloadName)
+      res.setHeader('Content-Type', `${book.ebook_mime || 'text/markdown'}; charset=utf-8`)
+      res.setHeader('Content-Disposition', `attachment; filename="${downloadName}"; filename*=UTF-8''${encoded}`)
+    } catch (_) {}
+    return res.status(200).send(book.ebook_content)
+  }
+
   // 若原紀錄的路徑不存在，嘗試回退至環境變數目錄尋找
   let ebookPath = book.ebook_file
   if (!fs.existsSync(ebookPath)) {
     const fallbackDir = process.env.UPLOAD_DIR || path.join(__dirname, '..', 'uploads', 'ebooks')
-    const candidate = path.join(fallbackDir, path.basename(ebookPath))
-    if (fs.existsSync(candidate)) ebookPath = candidate
+    const candidate = path.join(fallbackDir, path.basename(ebookPath || ''))
+    if (candidate && fs.existsSync(candidate)) ebookPath = candidate
   }
-  if (!fs.existsSync(ebookPath)) return res.status(404).json({ success: false, message: '電子書檔案不存在' })
+  if (!ebookPath || !fs.existsSync(ebookPath)) {
+    // 自動清理異常狀態：檔案遺失則重置 has_ebook 與相關欄位
+    try {
+      await book.update({ has_ebook: false, ebook_file: null, ebook_filename: null, ebook_size: null })
+    } catch (_) {}
+    return res.status(404).json({ success: false, message: '電子書檔案不存在' })
+  }
   // 去重下載計數：每日唯一
   try {
     const qi = sequelize.getQueryInterface()
@@ -415,17 +433,6 @@ async function downloadEbook(req, res) {
       res.set('X-View-Count', String(book.view_count || 0))
     }
   } catch (_) {}
-  // 若資料庫已存有內容，直接傳回文字內容
-  if (typeof book.ebook_content !== 'undefined' && book.ebook_content) {
-    let downloadName = book.ebook_filename || `${book.title || 'ebook'}.md`
-    try { downloadName = fixFilename(downloadName) } catch (_) {}
-    try {
-      const encoded = encodeURIComponent(downloadName)
-      res.setHeader('Content-Type', `${book.ebook_mime || 'text/markdown'}; charset=utf-8`)
-      res.setHeader('Content-Disposition', `attachment; filename="${downloadName}"; filename*=UTF-8''${encoded}`)
-    } catch (_) {}
-    return res.status(200).send(book.ebook_content)
-  }
   // 優先使用原始檔名（修正編碼），其次以書名作為檔名，最後使用實體檔案名
   let downloadName = book.ebook_filename || `${book.title || 'ebook'}.md`
   try { downloadName = fixFilename(downloadName) } catch (_) {}
