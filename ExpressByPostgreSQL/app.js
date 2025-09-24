@@ -186,6 +186,38 @@ async function start() {
       console.log('🔌 測試資料庫連線...')
       await sequelize.authenticate()
       console.log('✅ 資料庫連線成功')
+      // 啟動後自動檢查並建立缺失的核心資料表（避免 relation "books" 不存在）
+      try {
+        const qi = sequelize.getQueryInterface()
+        let booksExists = true
+        try {
+          await qi.describeTable('books')
+        } catch (_) {
+          booksExists = false
+        }
+        if (!booksExists) {
+          console.log('🛠️ 偵測到缺少表：books，開始建立...')
+          const { Book } = require('./models')
+          await Book.sync({ alter: false })
+          console.log('✅ 已建立表：books')
+        }
+
+        // 若 books 剛建立，確保關聯表 user_books 也存在
+        let userBooksExists = true
+        try {
+          await qi.describeTable('user_books')
+        } catch (_) {
+          userBooksExists = false
+        }
+        if (!userBooksExists) {
+          console.log('🛠️ 偵測到缺少表：user_books，開始建立...')
+          const { UserBook } = require('./models')
+          await UserBook.sync({ alter: false })
+          console.log('✅ 已建立表：user_books')
+        }
+      } catch (bootErr) {
+        console.warn('⚠️ 啟動時自動建表流程發生警告：', bootErr && bootErr.message)
+      }
       
       // 設定連線錯誤處理 (僅在開發環境)
       if (process.env.NODE_ENV === 'development') {
