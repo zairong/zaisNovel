@@ -22,7 +22,8 @@
     "check-config": "node ./scripts/check-render-config.js",
     "debug-db": "node ./scripts/check-render-config.js && node setup.js",
     "monitor-db": "node ./scripts/monitor-db-connections.js",
-    "test-db": "node ./scripts/test-db-connection.js"
+    "test-db": "node ./scripts/test-db-connection.js",
+    "analyze-db": "node ./scripts/analyze-db-performance.js"
   },
   "keywords": [],
   "author": "",
